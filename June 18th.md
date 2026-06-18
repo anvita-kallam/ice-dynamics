@@ -5,3 +5,4 @@ Test Jupyter working environment for Ice Pack and review suggested articles on V
 
 ## Verification Completed
 - Ran into otool error that was purely cosmetic, no need for changes in environment.
+- authentication on DSI cluster via GitHub
