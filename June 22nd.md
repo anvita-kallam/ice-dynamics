@@ -24,3 +24,9 @@ Understand Dr.Emma Liu's given code and test under constrained circumstances
 - Run forward for --final-time years (default 1 yr) with PETSc + Icepack fallback
 - Write outputs: new checkpoint, updated cfg, and NPZ grid (initial + final states)
 
+# today's progress
+
+Run spinupNew Full under test cases
+- C = 1e-1 (less sliding)
+- C = 1e-3
+
