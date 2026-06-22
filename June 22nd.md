@@ -16,4 +16,11 @@ Understand Dr.Emma Liu's given code and test under constrained circumstances
   * {output_stem}.h5 — mesh + fields (velocity, thickness, surface, bed, A)
   * {output_stem}.json — full config
   * {output_stem}_grid.npz — fields on a regular 500 m grid
+ 
+## runSimNew (forward continuation from checkpoint)
+- Load checkpoint (--ss-filename) — mesh, h, u, s, b, and optionally A
+- Load config from embedded cfg_json in the HDF5, a sidecar .json, or --cfg-file
+- Apply overrides for forward-only parameters: A, C, a, Ax, Ay, omega, etc.
+- Run forward for --final-time years (default 1 yr) with PETSc + Icepack fallback
+- Write outputs: new checkpoint, updated cfg, and NPZ grid (initial + final states)
 
