@@ -29,4 +29,5 @@ Understand Dr.Emma Liu's given code and test under constrained circumstances
 Run spinupNew Full under test cases
 - C = 1e-1 (less sliding)
 - C = 1e-3
-
+- .npz — has thickness, velocity, viscosity, etc. on a regular grid without needing Firedrake mesh machinery
+- to work on: extending the C bounds closer to 0 and 1 without creating a convergence error (likely by decreasing time step)
