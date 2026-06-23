@@ -47,5 +47,137 @@ Both simulations begin from a stable initial value of **C = 1e-2** to avoid intr
 | `spinupNewFull-moreSlide.ipynb` | `SteadyState_more_sliding_*` | `adaptivity_output_more_sliding/` |
 | `spinupNewFull-lessSlide.ipynb` | `SteadyState_no_sliding_*` | `adaptivity_output_no_sliding/` |
 
-### Current Status
-Both notebooks have been patched with the updated convergence strategy and output configuration. The next step is to rerun the simulations and evaluate whether the gradual ramping approach successfully reaches the desired sliding extremes while maintaining solver convergence.
+## Test Mode Implementation
+
+Added a configurable switch:
+
+```python
+TEST_MODE = True
+```
+
+to enable rapid validation of the pipeline before launching full production runs.
+
+| Setting | Test Mode | Production Mode |
+|----------|------------|----------------|
+| Stage length | 50 yr | 6500 yr |
+| Purpose | Workflow verification | Quasi-steady-state solution |
+| Runtime | ~15–30 min | Several hours |
+| Outputs | `*_test_50yr_*` | `*_6000yr_*` |
+
+Based on discussion and preliminary results, the production duration may potentially be reduced to approximately 4000 years if thickness evolution has stabilized after the friction ramp completes.
+
+---
+
+## Previous Production Run
+
+Prior to splitting the workflow into separate extreme-sliding cases, a full production simulation was completed using the default friction value (`C = 1e-2`).
+
+Generated outputs:
+
+```text
+SteadyState_MeshRefinement_6000yr_1refine.h5
+SteadyState_MeshRefinement_6000yr_1refine.json
+SteadyState_MeshRefinement_6000yr_1refine_grid.npz
+```
+
+This run exercised the full adaptive mesh-refinement workflow and produced physically reasonable glacier states.
+
+---
+
+## Extreme-Sliding Test Results
+
+Both extreme-sliding test cases completed successfully today.
+
+### More Sliding Case
+
+Output:
+`SteadyState_more_sliding_test_50yr_1refine_grid.npz`
+
+| Metric | Value |
+|----------|----------|
+| C | 1e-4 |
+| NaNs | 0 |
+| Mean Thickness | 128.18 m |
+| Mean Speed | 11.95 m/yr |
+| Mean Viscosity | 258 |
+| Grounded Fraction | 61.5% |
+
+### Less Sliding Case
+
+Output:
+`SteadyState_no_sliding_test_50yr_1refine_grid.npz`
+
+| Metric | Value |
+|----------|----------|
+| C | 1e2 |
+| NaNs | 0 |
+| Mean Thickness | 128.20 m |
+| Mean Speed | 11.34 m/yr |
+| Mean Viscosity | 340 |
+| Grounded Fraction | 60.9% |
+
+### Validation Outcome
+
+Pipeline verification passed successfully.
+
+Both simulations completed:
+
+- Four-stage spin-up sequence
+- Adaptive mesh refinement
+- Diagnostic solves
+- Checkpoint generation
+- Grid export
+
+No convergence failures or NaN values were observed.
+
+---
+
+## Interpretation of Results
+
+The test runs demonstrate that the convergence modifications successfully allow simulations to reach extreme sliding configurations without solver failure.
+
+Observed physical trends are consistent with expectations:
+
+- Higher sliding produces greater ice velocity.
+- Higher sliding corresponds to lower inferred viscosity.
+- Grounding-line and thickness fields remain physically realistic.
+
+However, differences between the two cases remain relatively small:
+
+- Thickness RMS difference ≈ 2.4 m
+- Mean velocity difference ≈ 0.6 m/yr
+
+This is expected because the 50-year test only serves as a pipeline verification run. Most of the simulation time is spent ramping the friction parameter, leaving little time for the glacier to equilibrate at the target sliding value.
+
+Therefore, the current test outputs should not be considered final synthetic ground truths.
+
+---
+
+## Outstanding Work
+
+The following tasks remain:
+
+### Milestone 1
+- Run full production spin-ups (`TEST_MODE = False`) for both sliding scenarios.
+- Generate final production `.npz` ground-truth datasets.
+- Compare outputs using `analyze_spinup_npz.ipynb`.
+
+### Milestone 2
+- Develop viscosity inference / variational inference workflow.
+
+### Milestone 3
+- Apply methodology to real glacier datasets.
+
+### Milestone 4
+- Prepare poster and final project presentation materials.
+
+---
+
+## Next Steps
+
+1. Set `TEST_MODE = False` in both spin-up notebooks.
+2. Run both production simulations overnight.
+3. Analyze production outputs using `analyze_spinup_npz.ipynb`.
+4. Use the resulting production `_grid.npz` files as synthetic ground-truth datasets for viscosity inference experiments.
+5. Defer use of `runSimNew.ipynb` unless future forward perturbation experiments are required.
+
