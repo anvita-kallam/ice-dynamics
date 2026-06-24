@@ -9,7 +9,7 @@ Spent additional time reviewing literature related to ice viscosity and glacier 
 
 Key concepts reviewed include:
 
-*Ice Viscosity*
+**Ice Viscosity**
 
 Ice viscosity describes the resistance of glacier ice to deformation under applied stress. Unlike many fluids, ice viscosity is not constant and varies based on several factors, including:
 
@@ -20,7 +20,7 @@ Ice viscosity describes the resistance of glacier ice to deformation under appli
 
 As a result, glacier ice behaves as a non-Newtonian fluid.
 
-Glen's Flow Law
+**Glen's Flow Law**
 
 Reviewed the role of Glen's Flow Law in glacier modeling, which relates stress and strain rate through a nonlinear power-law relationship.
 
