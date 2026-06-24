@@ -9,7 +9,7 @@ Spent additional time reviewing literature related to ice viscosity and glacier 
 
 Key concepts reviewed include:
 
-Ice Viscosity
+*Ice Viscosity*
 
 Ice viscosity describes the resistance of glacier ice to deformation under applied stress. Unlike many fluids, ice viscosity is not constant and varies based on several factors, including:
 
