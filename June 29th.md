@@ -1,5 +1,8 @@
 ## Analsyze the Re-Ran Spinups post 10500 year update
 
+### Objective
+- Analyze results now that total duration is higher to ensure ground truth matches physical inferences
+
 ## Production Spin-up Results (10,500 yr, 4,000 yr Ramp)
 
 ### Simulation Settings
