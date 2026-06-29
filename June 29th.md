@@ -41,3 +41,23 @@
 - While the maximum ice speeds remained similar, the spatial speed differences became much larger, indicating that basal sliding had a stronger influence on glacier flow.
   - The mean speed difference is positive, meaning the glacier is, on average, flowing faster in the more-sliding case.
 - Updated spin-up configuration preserved the expected physical differences between the two basal sliding regimes (get this checked by Dr. Liu)
+
+## Icepack Physical Constants Review
+
+Review the Icepack source code and documentation to understand the physical constants and unit system used by the model before running Variational Inference (VI).
+
+### Work Completed
+- Read through the `constants.py` module in the Icepack GitHub repository.
+- Confirmed that Icepack uses **megapascals (MPa), meters (m), and years (yr)** as its base units rather than standard SI units.
+- Identified key physical constants used throughout the model, including:
+  - Gravity
+  - Ice and seawater density
+  - Glen flow law exponent
+  - Weertman sliding law exponent
+  - Gas constant
+  - Heat capacity and thermal properties
+
+### Key Takeaways
+- Many constants are scaled to Icepack's MPa–m–yr unit system (e.g., gravity and densities), so values differ numerically from their SI counterparts.
+- Understanding these conversions is necessary to ensure observational data and model parameters are converted consistently before running Variational Inference.
+```
