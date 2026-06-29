@@ -1,4 +1,4 @@
-## Analsyze the Re-Ran Spinups post 10500 year update
+## Analyze the Re-Ran Spinups post 10500 year update
 
 ### Objective
 - Analyze results now that total duration is higher to ensure ground truth matches physical inferences
