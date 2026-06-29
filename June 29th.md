@@ -31,6 +31,9 @@
 - **Mean speed:** +44.39 m/yr (maximum absolute difference = 617.30 m/yr)
 - **Mean viscosity:** -11.0 (RMS = 16.95)
 
+<img width="1069" height="700" alt="Screenshot 2026-06-29 at 9 21 05 AM" src="https://github.com/user-attachments/assets/92674c37-ebbd-4f80-95ef-20c95c7cf262" />
+
+
 ### Key Findings
 
 - After updating the production settings (10,500-year simulation with a 4,000-year ramp), the two simulations diverged much more than in the previous comparison.
