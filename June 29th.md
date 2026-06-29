@@ -36,4 +36,5 @@
 - After updating the production settings (10,500-year simulation with a 4,000-year ramp), the two simulations diverged much more than in the previous comparison.
 - The **more-sliding** case produced a substantially **thinner glacier**, **lower effective viscosity**, and a **slightly smaller grounded area** than the **no-sliding** case.
 - While the maximum ice speeds remained similar, the spatial speed differences became much larger, indicating that basal sliding had a stronger influence on glacier flow.
+  - The mean speed difference is positive, meaning the glacier is, on average, flowing faster in the more-sliding case.
 - These results show that the updated spin-up configuration preserved the expected physical differences between the two basal sliding regimes, providing a much clearer signal for downstream analysis.
