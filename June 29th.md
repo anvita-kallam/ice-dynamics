@@ -40,4 +40,4 @@
 - The **more-sliding** case produced a substantially **thinner glacier**, **lower effective viscosity**, and a **slightly smaller grounded area** than the **no-sliding** case.
 - While the maximum ice speeds remained similar, the spatial speed differences became much larger, indicating that basal sliding had a stronger influence on glacier flow.
   - The mean speed difference is positive, meaning the glacier is, on average, flowing faster in the more-sliding case.
-- These results show that the updated spin-up configuration preserved the expected physical differences between the two basal sliding regimes, providing a much clearer signal for downstream analysis.
+- Updated spin-up configuration preserved the expected physical differences between the two basal sliding regimes (get this checked by Dr. Liu)
