@@ -60,4 +60,3 @@ Review the Icepack source code and documentation to understand the physical cons
 ### Key Takeaways
 - Many constants are scaled to Icepack's MPa–m–yr unit system (e.g., gravity and densities), so values differ numerically from their SI counterparts.
 - Understanding these conversions is necessary to ensure observational data and model parameters are converted consistently before running Variational Inference.
-```
