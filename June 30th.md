@@ -104,6 +104,10 @@ for case_label, case, color in (
     if fig is not None:
         plt.show()
 ```
+### Velocity Plot
+- The existing production logs do not include avg speed=, so the plot uses a |dh/dt| proxy (dashed line, noted in the panel title)
+
+<img width="1148" height="617" alt="Screenshot 2026-06-30 at 9 33 25 AM" src="https://github.com/user-attachments/assets/f9d84501-1e99-4374-8ee7-c1825e8260da" />
 
 ### Key Idea
 - A simulation is considered to have reached **steady state** when quantities such as velocity and thickness stop changing significantly with time.
