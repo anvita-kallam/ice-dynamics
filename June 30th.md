@@ -6,6 +6,10 @@
 ### Work Completed
 - Began plotting the evolution of **ice velocity** and **mean ice thickness** throughout the simulation.
 - Focused on identifying whether these quantities stabilize after the ramp period.
+
+<img width="955" height="640" alt="Screenshot 2026-06-30 at 9 21 07 AM" src="https://github.com/user-attachments/assets/a7810cc1-bd63-424d-af66-695a702d16f6" />
+
+  
 ```
 from parse_spinup_log import (
     find_latest_run_log,
