@@ -1,6 +1,6 @@
 # Prepare VI datasets from spin-up NPZ
 
-### Objective: Prepare Production Outputs for Variational Inference
+## Objective: Prepare Production Outputs for Variational Inference
 
 - Create an interactive notebook for preprocessing production spin-up outputs into VI-ready datasets while keeping the preprocessing logic centralized in a reusable script.
 
