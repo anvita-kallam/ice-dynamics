@@ -1,4 +1,4 @@
-# VI Modelling Test
+# VI Modelling Test + Icepack SSA Discovery
 
 ## Objective: Develop a Variational Inference Training Pipeline
 
