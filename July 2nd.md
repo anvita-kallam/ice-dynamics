@@ -36,10 +36,10 @@
 
 ### Problems
 
-❌ The posterior is much smoother than the ground truth.
-❌ It underestimates the high-viscosity region near the left.
-❌ Fine-scale spatial variability is almost entirely missing.
-❌ The residual maps show systematic bias rather than random error. Large blue regions indicate the model consistently predicts viscosities that are too low in that area.
+- ❌ The posterior is much smoother than the ground truth.
+- ❌ It underestimates the high-viscosity region near the left.
+- ❌ Fine-scale spatial variability is almost entirely missing.
+- ❌ The residual maps show systematic bias rather than random error. Large blue regions indicate the model consistently predicts viscosities that are too low in that area.
 
 This suggests the model is learning the average field rather than the detailed spatial variations.
 
