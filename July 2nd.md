@@ -31,6 +31,11 @@
 | More Sliding | ~0.26 | ~0.64 |
 | No Sliding | ~0.41 | ~0.82 |
 
+<img width="1459" height="377" alt="Screenshot 2026-07-02 at 9 42 18 AM" src="https://github.com/user-attachments/assets/0026e538-ec73-43e0-afec-65a76d9f7c2b" />
+<img width="1467" height="386" alt="Screenshot 2026-07-02 at 9 42 39 AM" src="https://github.com/user-attachments/assets/01b436f8-05b9-4c6d-93c1-d4a28c8af524" />
+
+
+
 ### Key Takeaways
 
 - Successfully established a complete prototype VI workflow from preprocessing through posterior inference and visualization.
