@@ -57,4 +57,5 @@ More Sliding vs. No Sliding
 ## Exact SSA Equations of Icepack
 
 Since the VI needs to use the exact same equations as Icepack, these are necessary to uncover
+- read the source code at https://github.com/icepack/icepack
 
