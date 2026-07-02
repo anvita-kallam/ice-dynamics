@@ -54,3 +54,7 @@ More Sliding vs. No Sliding
 - The current implementation is an emulator-based proof of concept using NumPy and SciPy, where the surrogate model replaces the forward physics during inference.
 - A future physics-informed implementation will replace the surrogate likelihood with Icepack's `diagnostic_solve` to perform inference directly using the glacier dynamics model.
 
+## Exact SSA Equations of Icepack
+
+Since the VI needs to use the exact same equations as Icepack, these are necessary to uncover
+
