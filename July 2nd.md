@@ -34,7 +34,19 @@
 <img width="1459" height="377" alt="Screenshot 2026-07-02 at 9 42 18 AM" src="https://github.com/user-attachments/assets/0026e538-ec73-43e0-afec-65a76d9f7c2b" />
 <img width="1467" height="386" alt="Screenshot 2026-07-02 at 9 42 39 AM" src="https://github.com/user-attachments/assets/01b436f8-05b9-4c6d-93c1-d4a28c8af524" />
 
+### Problems
 
+❌ The posterior is much smoother than the ground truth.
+❌ It underestimates the high-viscosity region near the left.
+❌ Fine-scale spatial variability is almost entirely missing.
+❌ The residual maps show systematic bias rather than random error. Large blue regions indicate the model consistently predicts viscosities that are too low in that area.
+
+This suggests the model is learning the average field rather than the detailed spatial variations.
+
+More Sliding vs. No Sliding
+- Interestingly:
+  - No Sliding has the higher R² (~0.41), meaning it captures spatial variation somewhat better.
+  - But it also has a worse RMSE (~0.82), indicating larger absolute prediction errors.
 
 ### Key Takeaways
 
