@@ -4,7 +4,7 @@
 
 - Build an end-to-end workflow for inferring glacier viscosity from noisy surface velocity observations using Variational Inference (VI).
 
-## VI Training Notebook Development
+### VI Training Notebook Development
 
 - Created `notebooks/learning/train_vi_viscosity_test.ipynb`.
 - Implemented a workflow to:
@@ -15,7 +15,7 @@
   - Visualize posterior mean vs. ground-truth viscosity in both log and linear space.
   - Summarize inference results for both test cases.
 
-## Variational Inference Model Implementation
+### Variational Inference Model Implementation
 
 - Created `scripts/vi_viscosity_model.py`.
 - Implemented a prototype VI pipeline that:
@@ -31,7 +31,7 @@
 | More Sliding | ~0.26 | ~0.64 |
 | No Sliding | ~0.41 | ~0.82 |
 
-## Key Takeaways
+### Key Takeaways
 
 - Successfully established a complete prototype VI workflow from preprocessing through posterior inference and visualization.
 - The current implementation is an emulator-based proof of concept using NumPy and SciPy, where the surrogate model replaces the forward physics during inference.
