@@ -28,6 +28,40 @@
   - Updating the membrane stress formulation to use Glen's flow law.
   - Removing the learned sliding parameter if the basal friction coefficient is fixed during spin-up.
 
+## Code Updates
+
+### `Archive/models_torch.py`
+- Added helper functions for:
+  - Icepack unit conversions.
+  - Glen effective strain rate computation.
+  - Glen effective viscosity.
+  - Spin-up plastic basal drag law.
+- Updated `_physics_nll_ssa` to:
+  - Use Icepack units.
+  - Compute membrane stresses using Glen rheology.
+  - Remove the learned sliding parameter (`λ`) from the SSA residual.
+  - Add a configuration option to either infer viscosity (`ssa_use_inferred_eta=True`) or compute it directly from Glen's law.
+
+### `Archive/utilities_torch.py`
+- Updated viscosity priors to MPa·yr units.
+- Added Icepack SSA configuration parameters (`fluidity_A`, `friction_C`, Glen exponent, etc.).
+- Preserved velocities in m/yr instead of converting to SI.
+- Added automatic loading of the spin-up configuration (`A` and `C`) from the NPZ `cfg_json`.
+
+### Additional Changes
+- Updated `Archive/README.md` with documentation describing the SSA alignment.
+- Added new configuration options for controlling continuity enforcement, rheology, and basal friction.
+
+## Key Takeaways
+
+- The Archive VI model now belongs to the same physics family as the Icepack forward model, reducing inconsistencies between the training data and inverse model.
+- Basal sliding is now determined by the fixed spin-up friction coefficient rather than a learned sliding parameter.
+- The implementation can now be run in either:
+  - **Inverse mode**, where viscosity is inferred through VI, or
+  - **Forward mode**, where viscosity is computed directly using Glen's law for validation.
+
 ## Next Steps
 
-- Begin aligning the Archive VI code with the Icepack forward model, starting with unit conversions and the basal friction formulation before updating the rheology.
+- Point the training configuration to the latest spin-up NPZ files so `A` and `C` are loaded automatically.
+- Retrain the VI model using the updated physics and unit system.
+- Compare inference results against the previous implementation to quantify the impact of the physics alignment.
