@@ -338,7 +338,7 @@ In `utilities_torch.py` default config (and `run_torch.cfg`):
 
 ## To remember:
 
-1. I did **not** put icepack inside the PyTorch loop; we made VI’s SSA residual **look like icepack / spin-up**.
+1. I did **not** put icepack inside the PyTorch loop; I made VI’s SSA residual **look like icepack / spin-up**.
 2. Biggest conceptual fix: $\lambda$ driving-stress sliding → plastic basal law with known $C$.
 3. Units matter as much as equations.
 4. Continuity is **optional** for diagnostic comparisons.
