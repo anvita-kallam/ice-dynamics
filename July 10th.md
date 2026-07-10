@@ -144,9 +144,7 @@ The prediction errors for **log10(η)** indicate that the model exhibits a stron
 
 The histogram displays the distribution of
 $$
-\[
 \log_{10}(\eta_{\text{pred}}) - \log_{10}(\eta_{\text{ref}})
-\]
 $$
 Observations:
 
