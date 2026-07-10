@@ -8,7 +8,7 @@
 ## Prediction
 
 - Submitted the prediction job using the trained VI checkpoint.
-- Need to generate posterior predictions for the synthetic test case for comparison with the Icepack ground truth.
+- Generated posterior predictions for the synthetic test case for comparison with the Icepack ground truth.
 
 
 ### Pipeline Status
@@ -17,7 +17,7 @@
 |--------|--------|
 | Pretrain | ✅ Completed |
 | VI Training | ✅ Completed (Job 978514) |
-| Prediction | ⏳ Ready to submit |
+| Prediction | ✅ Completed |
 
 ### Initial Plotting
 
