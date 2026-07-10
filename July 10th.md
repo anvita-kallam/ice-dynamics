@@ -130,6 +130,123 @@ Since the primary objective is to provide a good initialization for Variational 
 
 These experiments will help determine the most computationally efficient pretraining strategy before Variational Inference.
 
+## Joint PINN + Variational Inference Training Analysis
+
+<img width="1684" height="1516" alt="image" src="https://github.com/user-attachments/assets/0ec3d17f-708b-4c5b-b902-836bcfcdb193" />
+
+
+The joint training stage appears stable, with both the training and validation ELBO remaining closely aligned throughout optimization. Unlike the PINN pretraining stage, the total loss changes only slightly because the pretrained network already provides a good initialization. Most of the optimization now focuses on balancing the data fit, PDE residual, and KL regularization rather than learning the solution from scratch.
+
+---
+
+### Key Observations
+
+### 1. Total ELBO Loss
+
+The total training and validation ELBO remain nearly identical throughout training.
+
+Observations:
+
+- Training and validation curves overlap almost perfectly.
+- No systematic divergence between train and validation.
+- The ELBO remains approximately constant throughout optimization.
+- Occasional spikes occur in both curves simultaneously.
+
+These spikes likely arise from stochastic optimization or minibatch sampling rather than instability, since both train and validation recover immediately afterward.
+
+Overall, there is no evidence of overfitting or optimization failure.
+
+---
+
+### 2. Data Loss
+
+The data loss remains centered around
+
+$$
+\log_{10}(\text{loss}) \approx -1.6
+$$
+
+with moderate stochastic fluctuations.
+
+Observations:
+
+- Small oscillations are expected during stochastic optimization.
+- Several isolated spikes occur, but they are temporary.
+- No long-term upward trend is observed.
+- Training and validation data losses closely follow one another.
+
+This indicates that the network maintains a consistent fit to the observed data throughout joint optimization.
+
+---
+
+### 3. PDE Residual
+
+The PDE residual remains nearly constant throughout training.
+
+Observations:
+
+- Very little variation over time.
+- Training and validation curves overlap.
+- No indication that the physics constraint deteriorates.
+
+This behavior suggests that the pretrained PINN already satisfies the governing equations reasonably well, so the optimization mainly preserves the learned physical consistency while refining the posterior.
+
+---
+
+### 4. Boundary Condition Loss
+
+Boundary condition (BC) loss was not logged during this run because
+
+```text
+ssa_enforce_continuity = False
+```
+
+Therefore, only the data and PDE losses contribute to the reported optimization diagnostics.
+
+---
+
+## Interpretation
+
+The behavior differs substantially from PINN pretraining.
+
+During pretraining:
+
+- Loss decreases rapidly as the network learns the glacier state variables.
+
+During joint training:
+
+- The pretrained PINN already provides a strong initialization.
+- Optimization primarily adjusts the posterior distribution over viscosity.
+- The objective balances:
+  - Data loss
+  - PDE residual
+  - KL divergence (variational regularization)
+
+Because the network begins near a good solution, only modest changes in the ELBO are expected.
+
+---
+
+## Positive Indicators
+
+- Training and validation ELBO remain nearly identical.
+- No evidence of overfitting.
+- Stable optimization throughout the run.
+- Data loss remains consistent.
+- PDE residual stays approximately constant.
+- Optimization quickly recovers after occasional stochastic spikes.
+
+---
+
+## Remaining Questions
+
+- Does the ELBO truly converge, or has optimization plateaued?
+- Would reducing the learning rate improve late-stage optimization?
+- Is the KL divergence dominating the total loss?
+- How much does joint training improve viscosity estimation relative to the pretrained PINN?
+- Would logging the KL term separately clarify how the optimizer balances the ELBO components?
+
+Further analysis of the individual ELBO components (data, PDE, and KL losses) and downstream viscosity prediction accuracy will help determine whether additional joint training provides meaningful improvements.
+
 ## log10(η) Prediction Error Analysis
 
 <img width="947" height="372" alt="image" src="https://github.com/user-attachments/assets/6b1130a6-5ddc-49d8-ac1a-b1137114258d" />
