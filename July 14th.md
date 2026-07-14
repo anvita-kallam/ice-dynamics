@@ -31,3 +31,20 @@ Even with the PINN frozen during the first 400 epochs, the viscosity bias (`log1
 - Implemented **ice-only farthest-point sampling (`ice_fps`)** for VGP inducing point placement in `models_torch.py`.
 - Added debug logging for **η gradient updates** (`eta_log_shift`) and the **VGP-to-PINN gradient ratio**.
 - Added a warning when **unfrozen PINN gradients exceed VGP gradients by more than 100×**, indicating the PINN is dominating optimization instead of η.
+
+### Results
+
+The updated training configuration appears to be working as intended.
+
+| Metric | Previous | Current (Epoch 0) |
+|--------|----------|-------------------|
+| Configuration | `ssa_*_std = 1`, `phys_scale = 1` | `ssa_*_std = 0.05`, `phys_scale = 5`, 784 ice-masked inducing points |
+| VGP η gradient | ~1e−6 | **~0.99** |
+| `log10_bias` | ~−1.29 | **−0.22** |
+| Mean predicted η | ~0.63 | **~7.5** (reference ≈ 15) |
+| `log10_r` | ~0 | **~0.40** |
+
+
+The stronger physics weighting, tighter SSA uncertainty, and improved inducing point placement significantly increased the gradient signal to the VGP. As a result, the optimizer is now updating η effectively, reducing the viscosity bias and improving correlation with the reference field from the start of training.
+
+The large negative physics loss (≈ −20) is expected with `ssa_*_std = 0.05`, since the Gaussian negative log-likelihood becomes negative when residuals are small. The key indicator of success is that the η gradients are now substantial and the predicted viscosity is much closer to the reference values.
