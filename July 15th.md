@@ -26,7 +26,7 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
 - Added a warning when `log10_bias < -1` to detect viscosity collapse early during training.
 ---
 
-# Model Tuning and Debugging
+# Since July 9th: Model Tuning and Debugging
 
 After the initial training results showed that the model was minimizing the loss by modifying the PINN state (velocity and thickness) instead of learning the latent viscosity field (η), several iterations of debugging and model tuning were performed. The objective of these changes was to force the optimizer to recover physically meaningful viscosity while preserving the pretrained glacier state.
 
