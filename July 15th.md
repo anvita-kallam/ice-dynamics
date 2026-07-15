@@ -26,7 +26,7 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
 - Added a warning when `log10_bias < -1` to detect viscosity collapse early during training.
 ---
 
-## Model Tuning and Debugging
+# Model Tuning and Debugging
 
 After the initial training results showed that the model was minimizing the loss by modifying the PINN state (velocity and thickness) instead of learning the latent viscosity field (η), several iterations of debugging and model tuning were performed. The objective of these changes was to force the optimizer to recover physically meaningful viscosity while preserving the pretrained glacier state.
 
@@ -102,13 +102,13 @@ After the initial training results showed that the model was minimizing the loss
         └─────────────────────────────────────────────┘
 ```
 ---
-# 1. Updated Training Recipe (`run_torch.cfg`)
+## 1. Updated Training Recipe (`run_torch.cfg`)
 
-## Objective
+### Objective
 
 Adjust the overall training configuration so that the optimizer receives a stronger—but stable—signal to learn viscosity.
 
-## Problem
+### Problem
 
 The previous configuration made the optimizer either:
 
@@ -117,7 +117,7 @@ The previous configuration made the optimizer either:
 
 Neither produced physically meaningful η estimates.
 
-## Changes
+### Changes
 
 ```ini
 [prior]
@@ -144,7 +144,7 @@ eta_prior_scale = 2.0
 eta_prior_std = 1.0
 ```
 
-## Beginner Explanation
+### Explanation
 
 Think of training as balancing several competing goals.
 
@@ -159,17 +159,17 @@ The new values were chosen because earlier experiments showed that overly aggres
 
 ---
 
-# 2. Added a Soft η Prior
+## 2. Added a Soft η Prior
 
-## Objective
+### Objective
 
 Prevent viscosity from collapsing to unrealistically small values.
 
-## Problem
+### Problem
 
 The optimizer discovered that making η extremely small slightly improved the physics loss, even though the resulting viscosity field was physically meaningless.
 
-## Code
+### Code
 
 ```python
 eta_loc = self.vgp_eta.mean(Xn)
@@ -186,7 +186,7 @@ The prior penalty is combined with the KL divergence:
 kl_and_prior = kl_value + eta_prior_scale * eta_prior_reg
 ```
 
-## Beginner Explanation
+### Explanation
 
 Imagine trying to guess someone's height.
 
@@ -202,13 +202,13 @@ It gently encourages viscosity to remain near its initial physically reasonable 
 
 ---
 
-# 3. Added State Regularization
+## 3. Added State Regularization
 
-## Objective
+### Objective
 
 Prevent the PINN from changing velocity and thickness to explain the observations.
 
-## Problem
+### Problem
 
 Even after unfreezing, the optimizer preferred modifying
 
@@ -218,7 +218,7 @@ Even after unfreezing, the optimizer preferred modifying
 
 instead of recovering viscosity.
 
-## Code
+### Code
 
 ```python
 with torch.no_grad():
@@ -229,7 +229,7 @@ state_u = batch_obs["uv_mask"] * (up - ur).square()
 state_reg = ...
 ```
 
-## Beginner Explanation
+### Explanation
 
 The pretrained PINN already produces a physically reasonable glacier.
 
@@ -241,13 +241,13 @@ This forces the optimizer to explain remaining errors through η instead of rewr
 
 ---
 
-# 4. Separate ELBO Loss Components
+## 4. Separate ELBO Loss Components
 
-## Objective
+### Objective
 
 Understand which part of the loss dominates optimization.
 
-## Problem
+### Problem
 
 Previously only the total loss was monitored.
 
@@ -259,7 +259,7 @@ If training failed, it was impossible to determine whether
 
 or another component was responsible.
 
-## Code
+### Code
 
 ```python
 data_scale = ...
@@ -278,7 +278,7 @@ The model now returns
 
 separately.
 
-## Beginner Explanation
+### Explanation
 
 Instead of seeing only a student's final exam grade, we now see:
 
@@ -291,19 +291,19 @@ This makes it much easier to diagnose what is going wrong during optimization.
 
 ---
 
-# 5. Resume-Safe Freezing and Separate Learning Rates
+## 5. Resume-Safe Freezing and Separate Learning Rates
 
-## Objective
+### Objective
 
 Ensure viscosity learns before the PINN begins updating.
 
-## Problem
+### Problem
 
 When training resumed from a checkpoint, the freeze schedule immediately ended because it depended on the absolute epoch number.
 
 The PINN therefore started changing immediately.
 
-## Code
+### Code
 
 ```python
 freeze_mean_net = epoch < freeze_until_epoch
@@ -322,7 +322,7 @@ vgp_eta_lr
 vgp_lambda_lr
 ```
 
-## Beginner Explanation
+### Explanation
 
 The PINN is like an experienced student.
 
@@ -336,19 +336,19 @@ After several hundred epochs, the PINN is allowed to make small adjustments usin
 
 ---
 
-# 6. Ice-Masked Farthest-Point Sampling
+## 6. Ice-Masked Farthest-Point Sampling
 
-## Objective
+### Objective
 
 Improve placement of Gaussian Process inducing points.
 
-## Problem
+### Problem
 
 Previously inducing points were placed on a simple rectangular grid.
 
 Many points landed off the glacier where no useful information existed.
 
-## Code
+### Code
 
 ```python
 placement = "ice_fps"
@@ -358,7 +358,7 @@ placement = "ice_fps"
 selected.append(np.argmax(dists))
 ```
 
-## Beginner Explanation
+### Explanation
 
 Instead of placing sensors uniformly across an empty map,
 
@@ -371,17 +371,17 @@ This allows the Gaussian Process to represent spatial variations in viscosity mu
 
 ---
 
-# 7. Continuous η Monitoring
+## 7. Continuous η Monitoring
 
-## Objective
+### Objective
 
 Detect viscosity collapse as early as possible.
 
-## Problem
+### Problem
 
 Previously the model could train for hours before it became obvious that η had failed.
 
-## Code
+### Code
 
 ```python
 evaluate_eta_vs_reference(...)
@@ -399,7 +399,7 @@ and issues warnings whenever
 log10_bias < -1
 ```
 
-## Beginner Explanation
+### Explanation
 
 Instead of waiting until training finishes,
 
@@ -411,13 +411,13 @@ If not, training can be stopped early.
 
 ---
 
-# 8. Gradient Diagnostics
+## 8. Gradient Diagnostics
 
-## Objective
+### Objective
 
 Verify that gradients actually reach η.
 
-## Problem
+### Problem
 
 Initially,
 
@@ -430,7 +430,7 @@ Nearly all optimization updated the PINN.
 
 Very little updated viscosity.
 
-## Code
+### Code
 
 ```python
 grad_norms = {
@@ -447,7 +447,7 @@ Warnings are issued whenever
 mean_net >> vgp_eta
 ```
 
-## Beginner Explanation
+### Explanation
 
 Gradients tell us which parameters are being updated.
 
@@ -459,17 +459,17 @@ If not, the optimizer configuration can be adjusted before wasting additional co
 
 ---
 
-# 9. Training Stability Improvements
+## 9. Training Stability Improvements
 
-## Objective
+### Objective
 
 Prevent auxiliary failures from stopping long-running jobs.
 
-## Problem
+### Problem
 
 Training occasionally crashed while writing plots or metrics, even though optimization itself was proceeding normally.
 
-## Code
+### Code
 
 ```python
 if append:
@@ -484,7 +484,7 @@ Additional safeguards include:
 - catching plotting exceptions,
 - preventing metric-writing issues from terminating training.
 
-## Beginner Explanation
+### Explanation
 
 Previously, a plotting error could stop an entire multi-hour training run.
 
@@ -492,7 +492,7 @@ Now, visualization errors no longer interrupt optimization, making long-running 
 
 ---
 
-# Training Progress
+## Training Progress
 
 | Attempt | Main Changes | Result |
 |----------|--------------|--------|
