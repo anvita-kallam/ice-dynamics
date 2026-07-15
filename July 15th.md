@@ -25,7 +25,10 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
 - Reset training with `restore = False` to start from a clean initialization rather than continuing the collapsed checkpoint.
 - Added a warning when `log10_bias < -1` to detect viscosity collapse early during training.
 
-## Summary of Hyperparameter Tuning
+## Model Tuning and Debugging
+
+After the initial training results showed that the model was minimizing the loss by modifying the PINN state (velocity and thickness) instead of learning the latent viscosity field (η), several iterations of debugging and model tuning were performed. The objective of these changes was to force the optimizer to recover physically meaningful viscosity while preserving the pretrained glacier state.
+
 
 ```text
                       Initial Training Results
@@ -97,3 +100,4 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
         │ satisfying the governing physics.          │
         └─────────────────────────────────────────────┘
 ```
+---
