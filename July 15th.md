@@ -1,6 +1,5 @@
 # Continue Model Hyperparamater Tuning + Joint Training
 ## Objective
-
 Stabilize joint PINN + Variational Inference training by preventing the viscosity field (η) from collapsing while maintaining meaningful physics optimization.
 
 ### Problem
@@ -25,3 +24,76 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
 - Reduced the inducing point resolution from **28×28** to **20×20** ice-masked farthest-point sampling for faster training.
 - Reset training with `restore = False` to start from a clean initialization rather than continuing the collapsed checkpoint.
 - Added a warning when `log10_bias < -1` to detect viscosity collapse early during training.
+
+## Summary of Hyperparameter Tuning
+
+```text
+                      Initial Training Results
+        ┌─────────────────────────────────────────────┐
+        │ • Poor η recovery                           │
+        │ • log10_bias ≈ -1                           │
+        │ • log10_r ≈ 0                              │
+        │ • PINN minimized loss by changing          │
+        │   velocity/thickness instead of viscosity  │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                  Diagnose Root Cause
+        ┌─────────────────────────────────────────────┐
+        │ • PINN dominated optimization              │
+        │ • Physics loss too weak                    │
+        │ • η gradients ≈ 0                          │
+        │ • Resume bug bypassed freeze               │
+        │ • No constraint on pretrained PINN         │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                 First Round of Improvements
+        ┌─────────────────────────────────────────────┐
+        │ ✓ Resume-safe freezing                     │
+        │ ✓ State regularization                     │
+        │ ✓ Separate learning rates                  │
+        │ ✓ Stronger physics weighting               │
+        │ ✓ Better logging & diagnostics             │
+        │ ✓ Ice-only inducing point placement        │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                     Initial Improvement
+        ┌─────────────────────────────────────────────┐
+        │ η gradients: 1e-6 → ~1                     │
+        │ log10_bias: -1.29 → -0.22                  │
+        │ log10_r: 0 → 0.40                          │
+        │ η predictions much closer to reference     │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                 New Problem Discovered
+        ┌─────────────────────────────────────────────┐
+        │ After ~174 epochs:                         │
+        │ • η collapsed toward zero                  │
+        │ • log10_bias → -1.98                       │
+        │ • Physics loss improved by reducing η      │
+        │   instead of learning correct viscosity    │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                Second Round of Improvements
+        ┌─────────────────────────────────────────────┐
+        │ ✓ Added η prior anchor                     │
+        │ ✓ Added hard η minimum                     │
+        │ ✓ Reduced η learning rate                  │
+        │ ✓ Increased KL regularization              │
+        │ ✓ Relaxed physics weighting                │
+        │ ✓ Restarted from fresh checkpoint          │
+        │ ✓ Early collapse detection warnings        │
+        └─────────────────────────────────────────────┘
+                              │
+                              ▼
+                         Current Goal
+        ┌─────────────────────────────────────────────┐
+        │ Learn physically realistic viscosity (η)   │
+        │ while preserving the pretrained PINN and   │
+        │ satisfying the governing physics.          │
+        └─────────────────────────────────────────────┘
+```
