@@ -24,6 +24,7 @@ Although the physics loss improved slightly, the optimizer achieved this by driv
 - Reduced the inducing point resolution from **28×28** to **20×20** ice-masked farthest-point sampling for faster training.
 - Reset training with `restore = False` to start from a clean initialization rather than continuing the collapsed checkpoint.
 - Added a warning when `log10_bias < -1` to detect viscosity collapse early during training.
+---
 
 ## Model Tuning and Debugging
 
@@ -101,3 +102,402 @@ After the initial training results showed that the model was minimizing the loss
         └─────────────────────────────────────────────┘
 ```
 ---
+# 1. Updated Training Recipe (`run_torch.cfg`)
+
+## Objective
+
+Adjust the overall training configuration so that the optimizer receives a stronger—but stable—signal to learn viscosity.
+
+## Problem
+
+The previous configuration made the optimizer either:
+
+- ignore viscosity completely (physics too weak), or
+- drive viscosity toward zero (physics too strong).
+
+Neither produced physically meaningful η estimates.
+
+## Changes
+
+```ini
+[prior]
+eta_init = 12.0
+eta_min = 1.0
+kl_eta = 0.5
+kl_lambda = 0.0
+num_inducing_x = 20
+num_inducing_y = 20
+inducing_placement = 'ice_fps'
+
+[likelihood]
+ssa_rx_std = 0.1
+ssa_ry_std = 0.1
+ssa_rh_std = 0.1
+
+[train]
+mean_net_lr = 1e-5
+vgp_eta_lr = 2e-4
+freeze_mean_net_epochs = 400
+phys_scale = 2.0
+state_reg_scale = 1.0
+eta_prior_scale = 2.0
+eta_prior_std = 1.0
+```
+
+## Beginner Explanation
+
+Think of training as balancing several competing goals.
+
+This configuration changes:
+
+- **how strongly physics is enforced**
+- **how quickly viscosity is allowed to change**
+- **how long the PINN remains frozen**
+- **how strongly viscosity is encouraged to remain physically realistic**
+
+The new values were chosen because earlier experiments showed that overly aggressive optimization caused η to collapse toward zero.
+
+---
+
+# 2. Added a Soft η Prior
+
+## Objective
+
+Prevent viscosity from collapsing to unrealistically small values.
+
+## Problem
+
+The optimizer discovered that making η extremely small slightly improved the physics loss, even though the resulting viscosity field was physically meaningless.
+
+## Code
+
+```python
+eta_loc = self.vgp_eta.mean(Xn)
+log_eta_offset = self.eta_log_shift + eta_loc
+
+eta_prior_reg = 0.5 * torch.mean(
+    (log_eta_offset / eta_prior_std) ** 2
+)
+```
+
+The prior penalty is combined with the KL divergence:
+
+```python
+kl_and_prior = kl_value + eta_prior_scale * eta_prior_reg
+```
+
+## Beginner Explanation
+
+Imagine trying to guess someone's height.
+
+Without any prior knowledge, you might accidentally guess **1 foot** because it minimizes some mathematical objective.
+
+Instead, you tell the model:
+
+> "People are usually around 6 feet tall unless the data strongly suggests otherwise."
+
+The η prior works exactly the same way.
+
+It gently encourages viscosity to remain near its initial physically reasonable value while still allowing it to move if the data supports it.
+
+---
+
+# 3. Added State Regularization
+
+## Objective
+
+Prevent the PINN from changing velocity and thickness to explain the observations.
+
+## Problem
+
+Even after unfreezing, the optimizer preferred modifying
+
+- velocity
+- thickness
+- surface elevation
+
+instead of recovering viscosity.
+
+## Code
+
+```python
+with torch.no_grad():
+    ur, vr, sr, hr = self.mean_net_ref(...)
+
+state_u = batch_obs["uv_mask"] * (up - ur).square()
+...
+state_reg = ...
+```
+
+## Beginner Explanation
+
+The pretrained PINN already produces a physically reasonable glacier.
+
+State regularization tells the optimizer:
+
+> "Stay close to this solution unless there is a good reason to move."
+
+This forces the optimizer to explain remaining errors through η instead of rewriting the glacier state.
+
+---
+
+# 4. Separate ELBO Loss Components
+
+## Objective
+
+Understand which part of the loss dominates optimization.
+
+## Problem
+
+Previously only the total loss was monitored.
+
+If training failed, it was impossible to determine whether
+
+- the data term,
+- physics term,
+- KL divergence,
+
+or another component was responsible.
+
+## Code
+
+```python
+data_scale = ...
+phys_scale = ...
+state_reg_scale = ...
+
+kl_and_prior = kl_value + eta_prior_scale * eta_prior_reg
+```
+
+The model now returns
+
+- data loss
+- physics loss
+- KL (+ η prior)
+- state regularization
+
+separately.
+
+## Beginner Explanation
+
+Instead of seeing only a student's final exam grade, we now see:
+
+- homework
+- quizzes
+- projects
+- participation
+
+This makes it much easier to diagnose what is going wrong during optimization.
+
+---
+
+# 5. Resume-Safe Freezing and Separate Learning Rates
+
+## Objective
+
+Ensure viscosity learns before the PINN begins updating.
+
+## Problem
+
+When training resumed from a checkpoint, the freeze schedule immediately ended because it depended on the absolute epoch number.
+
+The PINN therefore started changing immediately.
+
+## Code
+
+```python
+freeze_mean_net = epoch < freeze_until_epoch
+
+set_module_requires_grad(
+    raw_model.mean_net,
+    not freeze_mean_net
+)
+```
+
+Separate learning rates were also introduced:
+
+```python
+mean_net_lr
+vgp_eta_lr
+vgp_lambda_lr
+```
+
+## Beginner Explanation
+
+The PINN is like an experienced student.
+
+The VGP is the new student learning viscosity.
+
+By freezing the PINN first, the experienced student cannot immediately answer every question.
+
+The VGP is forced to learn.
+
+After several hundred epochs, the PINN is allowed to make small adjustments using a much smaller learning rate.
+
+---
+
+# 6. Ice-Masked Farthest-Point Sampling
+
+## Objective
+
+Improve placement of Gaussian Process inducing points.
+
+## Problem
+
+Previously inducing points were placed on a simple rectangular grid.
+
+Many points landed off the glacier where no useful information existed.
+
+## Code
+
+```python
+placement = "ice_fps"
+```
+
+```python
+selected.append(np.argmax(dists))
+```
+
+## Beginner Explanation
+
+Instead of placing sensors uniformly across an empty map,
+
+the new algorithm places them
+
+- only on the glacier, and
+- spreads them out as much as possible.
+
+This allows the Gaussian Process to represent spatial variations in viscosity much more efficiently.
+
+---
+
+# 7. Continuous η Monitoring
+
+## Objective
+
+Detect viscosity collapse as early as possible.
+
+## Problem
+
+Previously the model could train for hours before it became obvious that η had failed.
+
+## Code
+
+```python
+evaluate_eta_vs_reference(...)
+```
+
+Training now logs
+
+- RMSE
+- bias
+- correlation
+
+and issues warnings whenever
+
+```text
+log10_bias < -1
+```
+
+## Beginner Explanation
+
+Instead of waiting until training finishes,
+
+the model now periodically checks:
+
+> "Am I actually learning viscosity?"
+
+If not, training can be stopped early.
+
+---
+
+# 8. Gradient Diagnostics
+
+## Objective
+
+Verify that gradients actually reach η.
+
+## Problem
+
+Initially,
+
+```text
+grad_mean_net ≈ 100
+grad_vgp_eta ≈ 1e-6
+```
+
+Nearly all optimization updated the PINN.
+
+Very little updated viscosity.
+
+## Code
+
+```python
+grad_norms = {
+    "mean_net": ...,
+    "vgp_eta": ...,
+    "vgp_lambda": ...,
+    "eta_log_shift": ...
+}
+```
+
+Warnings are issued whenever
+
+```text
+mean_net >> vgp_eta
+```
+
+## Beginner Explanation
+
+Gradients tell us which parameters are being updated.
+
+These diagnostics answer:
+
+> "Is training actually changing viscosity?"
+
+If not, the optimizer configuration can be adjusted before wasting additional compute.
+
+---
+
+# 9. Training Stability Improvements
+
+## Objective
+
+Prevent auxiliary failures from stopping long-running jobs.
+
+## Problem
+
+Training occasionally crashed while writing plots or metrics, even though optimization itself was proceeding normally.
+
+## Code
+
+```python
+if append:
+    mode = "a"
+else:
+    mode = "w"
+```
+
+Additional safeguards include:
+
+- saving checkpoints before plotting,
+- catching plotting exceptions,
+- preventing metric-writing issues from terminating training.
+
+## Beginner Explanation
+
+Previously, a plotting error could stop an entire multi-hour training run.
+
+Now, visualization errors no longer interrupt optimization, making long-running cluster jobs much more robust.
+
+---
+
+# Training Progress
+
+| Attempt | Main Changes | Result |
+|----------|--------------|--------|
+| Initial | Weak physics, equal learning rates | PINN absorbed errors; η ignored |
+| Second | Strong physics, high η learning rate | η gradients improved, but viscosity collapsed toward zero |
+| Current | η prior, state regularization, safer learning rate, moderate physics, ice-masked inducing points | Mean viscosity remains stable (bias ≈ −0.01 at epoch 391); next evaluation is after the PINN unfreezes (epoch ≥ 400) |
+
+Overall, the debugging process progressively shifted optimization from modifying the glacier state variables to learning the latent viscosity field. While spatial correlation (`log10_r`) remains an area for improvement, the current configuration successfully prevents viscosity collapse and provides a much stronger foundation for physically meaningful inference.
