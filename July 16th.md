@@ -1,4 +1,4 @@
-# Final Joint Training Results
+# Final Joint Training Results (After July 14th/15th modifications)
 
 ## Objective
 
