@@ -255,32 +255,31 @@ Overall, these results indicate that the updated optimization strategy successfu
 
 ---
 
-## Summary
-
-The additional diagnostics demonstrate that the revised training strategy achieves its primary objective of stable joint optimization.
-
-Positive outcomes include:
-
-- Stable and well-behaved gradient flow.
-- Successful staged optimization with PINN freezing followed by controlled fine-tuning.
-- Near-zero viscosity bias throughout training.
-- Stable viscosity estimates with no evidence of collapse.
-- Consistent train/validation behavior.
-
-The primary remaining limitation is the recovery of the spatial distribution of viscosity. While the model accurately estimates the overall mean viscosity, the declining correlation indicates that additional work is needed to better capture fine-scale spatial variability.
-
 ## Conclusions
 
-The final training configuration resolves the major optimization issues identified during earlier experiments.
+The revised training strategy successfully resolved the major optimization issues identified during earlier experiments. By introducing staged optimization, stronger regularization, balanced physics constraints, and improved monitoring, the model now learns the latent viscosity field in a much more stable and physically meaningful manner.
 
 Key improvements include:
 
-- Stable ELBO optimization.
-- Nearly identical training and validation losses.
-- No evidence of overfitting.
-- Successful transition from frozen PINN training to joint optimization.
-- No viscosity collapse.
-- Pretrained glacier state is preserved through state regularization.
-- Physics constraints remain satisfied throughout training.
+- Stable ELBO optimization with closely aligned training and validation losses.
+- Successful staged training, where the PINN remains frozen initially before controlled joint fine-tuning.
+- Stable and well-behaved gradient flow into both the PINN and viscosity parameters.
+- Near-zero viscosity bias throughout training with no evidence of viscosity collapse.
+- Preservation of the pretrained glacier state through state regularization.
+- Physics constraints remain satisfied throughout optimization.
+- Consistent train/validation behavior with no signs of overfitting.
 
-Overall, these results suggest that the revised optimization strategy successfully shifts learning toward the latent viscosity field while maintaining the physical consistency of the pretrained PINN.
+While the optimizer now reliably recovers the correct **mean viscosity** and maintains a physically consistent solution, the primary remaining limitation is recovering the **spatial variability** of the viscosity field. The declining correlation between the predicted and reference viscosity indicates that the model still struggles to capture fine-scale spatial patterns, despite accurately estimating the overall mean.
+
+Overall, these results demonstrate that the revised optimization strategy successfully shifts learning toward the latent viscosity field while maintaining the physical consistency of the pretrained PINN, providing a significantly more robust foundation for future viscosity inference.
+
+## Next Steps
+
+Future work will focus on improving the spatial reconstruction of viscosity rather than overall optimization stability. Potential directions include:
+
+- Increase the number or optimize the placement of Gaussian Process inducing points to better represent spatial variability.
+- Explore alternative GP kernels or richer posterior parameterizations to increase model expressiveness.
+- Investigate additional physics constraints or improved loss formulations that provide stronger spatial information for η.
+- Incorporate additional observational data or synthetic experiments to improve the identifiability of viscosity.
+- Evaluate the approach on more realistic glacier geometries and eventually extend the framework to real-world glacier datasets.
+- Perform sensitivity studies on learning rates, regularization strengths, and physics weighting to further improve reconstruction accuracy.
