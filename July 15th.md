@@ -188,16 +188,6 @@ kl_and_prior = kl_value + eta_prior_scale * eta_prior_reg
 
 ### Explanation
 
-Imagine trying to guess someone's height.
-
-Without any prior knowledge, you might accidentally guess **1 foot** because it minimizes some mathematical objective.
-
-Instead, you tell the model:
-
-> "People are usually around 6 feet tall unless the data strongly suggests otherwise."
-
-The η prior works exactly the same way.
-
 It gently encourages viscosity to remain near its initial physically reasonable value while still allowing it to move if the data supports it.
 
 ---
