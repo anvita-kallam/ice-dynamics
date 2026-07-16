@@ -18,6 +18,9 @@ The final training configuration includes:
 
 ## Overall Assessment
 
+<img width="1183" height="1221" alt="image" src="https://github.com/user-attachments/assets/f5e94934-cf95-4dfc-bc1f-cfb768040c74" />
+
+
 The final training curves indicate that the modified training strategy is behaving as intended.
 
 Unlike previous runs, the model no longer exhibits viscosity collapse or unstable optimization. Training and validation losses remain closely aligned throughout optimization, suggesting that the model is learning consistently without overfitting.
