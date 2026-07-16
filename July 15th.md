@@ -268,16 +268,6 @@ The model now returns
 
 separately.
 
-### Explanation
-
-Instead of seeing only a student's final exam grade, we now see:
-
-- homework
-- quizzes
-- projects
-- participation
-
-This makes it much easier to diagnose what is going wrong during optimization.
 
 ---
 
