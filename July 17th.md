@@ -95,7 +95,8 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 ---
 ## Figure 1: Viscosity Recovery
 
-<img ...>
+<img width="2041" height="1054" alt="image" src="https://github.com/user-attachments/assets/ccb17bf1-20ba-475e-9fd2-3d7682e8e334" />
+
 
 ### Analysis
 
@@ -104,13 +105,17 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 - However, the difference maps and scatter plot show almost no relationship between predicted and true spatial patterns (`r ≈ 0.002`).
 - The VI uncertainty is nearly constant across the domain, indicating that the GP is not identifying regions of higher uncertainty.
 
+<img width="1892" height="557" alt="image" src="https://github.com/user-attachments/assets/460e913e-4fb2-4f81-82ab-ae5623e54c8e" />
+
+
 **Takeaway:** The model accurately predicts the average viscosity but fails to recover the spatial distribution, producing an almost constant viscosity field.
 
 ---
 
 ## Figure 2: Geometry Prediction
 
-<img ...>
+<img width="2041" height="1516" alt="image" src="https://github.com/user-attachments/assets/7dfb6255-f287-4863-b38d-1ad235119d62" />
+
 
 ### Analysis
 
@@ -124,7 +129,9 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 
 ## Figure 3: Speed Prediction
 
-<img ...>
+<img width="2041" height="531" alt="image" src="https://github.com/user-attachments/assets/fa6ad95d-6631-4e9a-b8ca-45e96ecdd4de" />
+
+
 
 ### Analysis
 
@@ -138,7 +145,8 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 
 ## Figure 4: Velocity Components
 
-<img ...>
+<img width="2041" height="1033" alt="image" src="https://github.com/user-attachments/assets/74dde1af-e94d-429a-91c2-87ecfc525c80" />
+
 
 ### Analysis
 
@@ -146,7 +154,8 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 - Errors remain small across most of the domain and are primarily concentrated near the terminus and lateral boundaries.
 - The transverse velocity (`v`) captures the expected flow structure with only minor localized differences.
 
-**Takeaway:** Joint optimization preserves both velocity components with high accuracy, demonstrating that the revised training strategy maintains the quality of the pretrained PINN while learning viscosity.
+**Takeaway:**  Joint optimization preserves both velocity components with high accuracy, demonstrating that the revised training strategy maintains the quality of the pretrained PINN while learning viscosity.
+
 ---
 
 # Conclusions
