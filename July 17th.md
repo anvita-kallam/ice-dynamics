@@ -22,7 +22,7 @@ Overall, the revised training strategy achieved stable optimization and nearly u
 
 ---
 
-# Figure 1: Joint Training Loss Components
+## Figure 1: Joint Training Loss Components
 
 <img width="1183" height="1221" alt="image" src="https://github.com/user-attachments/assets/c1d9c617-826a-4742-b0e5-0af0c99ff279" />
 
@@ -38,7 +38,7 @@ Overall, the revised training strategy achieved stable optimization and nearly u
 
 ---
 
-# Figure 2: Module Gradient Norms
+## Figure 2: Module Gradient Norms
 
 <img width="1168" height="644" alt="image" src="https://github.com/user-attachments/assets/89c4822a-95c2-4e24-a699-f92904b6a6c3" />
 
@@ -52,7 +52,7 @@ Overall, the revised training strategy achieved stable optimization and nearly u
 
 ---
 
-# Figure 3: Overall Training Diagnostics
+## Figure 3: Overall Training Diagnostics
 
 <img width="1200" height="1163" alt="image" src="https://github.com/user-attachments/assets/3d2771d7-1db5-46b5-9b33-439407ba6eb9" />
 
@@ -67,7 +67,7 @@ Overall, the revised training strategy achieved stable optimization and nearly u
 
 ---
 
-# Validation Results
+## Validation Results
 
 | Metric | Previous VI | η-Prior Run |
 |---------|------------:|------------:|
@@ -93,7 +93,7 @@ The η-prior strategy successfully eliminated the primary failure mode from prev
 While the model accurately predicts the **mean viscosity**, it still fails to recover meaningful **spatial variations** (`log10_eta_r ≈ 0`). The VGP largely predicts a nearly constant viscosity field centered near the prior rather than a spatially varying viscosity map.
 
 ---
-# Figure 1: Viscosity Recovery
+## Figure 1: Viscosity Recovery
 
 <img ...>
 
@@ -108,7 +108,7 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 
 ---
 
-# Figure 2: Geometry Prediction
+## Figure 2: Geometry Prediction
 
 <img ...>
 
@@ -122,7 +122,7 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 
 ---
 
-# Figure 3: Speed Prediction
+## Figure 3: Speed Prediction
 
 <img ...>
 
@@ -136,7 +136,7 @@ While the model accurately predicts the **mean viscosity**, it still fails to re
 
 ---
 
-# Figure 4: Velocity Components
+## Figure 4: Velocity Components
 
 <img ...>
 
