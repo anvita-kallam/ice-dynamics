@@ -42,11 +42,7 @@ However, the diagnostics indicate that recovering the **spatial structure** of t
 
 Although the average viscosity is estimated accurately, the relatively low correlation (`log10_r ≈ 0.15`) suggests that the model still struggles to reproduce fine-scale spatial variations. Additionally, the large gradient imbalance (approximately **6000×** larger gradients for the PINN than the VGP) indicates that the PINN continues to dominate optimization during joint training, leaving room for further improvements in directing learning toward η.
 
----
-
-## Next Step
-
-Generate posterior predictions using the trained model and update the diagnostic figures.
+Next I will generate posterior predictions using the trained model and update the diagnostic figures.
 
 ```bash
 cd ~/ice-dynamics/Archive
@@ -55,3 +51,84 @@ sbatch slurm/vi_predict_more_sliding.sbatch
 ```
 
 The prediction stage will generate posterior viscosity estimates and refreshed evaluation plots for further analysis of the recovered viscosity field.
+
+---
+
+# Figure 1: Joint Training Loss Components
+
+<img width="1183" height="1221" alt="image" src="https://github.com/user-attachments/assets/c1d9c617-826a-4742-b0e5-0af0c99ff279" />
+
+
+## Total ELBO
+
+### Observations
+
+- Training and validation ELBO overlap almost perfectly throughout all 1000 epochs.
+- The ELBO decreases rapidly during the first ~50 epochs, then remains stable while the PINN is frozen.
+- At **epoch 400**, unfreezing the PINN results in a second gradual decrease before converging around epochs 800–900.
+- No divergence between training and validation is observed.
+
+### Interpretation
+
+The optimization remains stable throughout training. The additional reduction in ELBO after epoch 400 shows that jointly optimizing the PINN and VGP improves the solution without introducing instability or overfitting.
+
+---
+
+## Data Loss and KL / η Prior
+
+### Observations
+
+- Data loss remains nearly constant during the frozen stage.
+- After the PINN is unfrozen, the data loss gradually decreases before stabilizing near the end of training.
+- The KL (+ η prior) term decreases rapidly during early training and then remains nearly constant, with only a few isolated spikes.
+
+### Interpretation
+
+Most viscosity learning occurs while the PINN is frozen. After unfreezing, the optimizer primarily fine-tunes the pretrained PINN while maintaining the learned viscosity. The stable KL term indicates that the η prior successfully prevents viscosity collapse.
+
+---
+
+## Physics Loss and State Regularization
+
+### Observations
+
+- Physics NLL remains essentially constant throughout training.
+- State regularization remains close to zero across all epochs.
+
+### Interpretation
+
+The governing equations remain satisfied throughout optimization, and the pretrained glacier state changes very little. This indicates that the optimizer is refining viscosity while preserving the pretrained PINN solution.
+
+---
+
+# Figure 2: Module Gradient Norms
+
+<img width="1168" height="644" alt="image" src="https://github.com/user-attachments/assets/89c4822a-95c2-4e24-a699-f92904b6a6c3" />
+
+
+## Observations
+
+- During the first **400 epochs**, only the VGP receives gradients because the PINN is frozen.
+- At epoch 400, the PINN is unfrozen and its gradient norm increases immediately.
+- The PINN gradients gradually decrease as optimization converges.
+- The VGP continues receiving gradients throughout training, although they remain much smaller than the PINN gradients.
+
+## Interpretation
+
+The staged optimization behaves as intended by allowing viscosity to learn before joint optimization begins. However, once the PINN is unfrozen, it again dominates the optimization, suggesting that additional gradient balancing may further improve recovery of the viscosity field.
+
+---
+
+# Figure 3: Overall Training Summary
+
+<img width="1200" height="1163" alt="image" src="https://github.com/user-attachments/assets/3d2771d7-1db5-46b5-9b33-439407ba6eb9" />
+
+
+## Key Takeaways
+
+- Stable optimization was maintained throughout the full **1000-epoch** training run.
+- Training and validation losses remain closely aligned, indicating no evidence of overfitting.
+- The staged training strategy successfully transitions from frozen PINN optimization to joint fine-tuning.
+- The η prior and state regularization prevent the viscosity collapse observed in earlier experiments.
+- The pretrained glacier state is preserved while still allowing improvements to the ELBO after unfreezing.
+- The primary remaining limitation is that the PINN continues to receive much larger gradients than the VGP after epoch 400, likely contributing to the weaker recovery of the spatial viscosity distribution.
