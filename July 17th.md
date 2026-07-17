@@ -132,3 +132,52 @@ The staged optimization behaves as intended by allowing viscosity to learn befor
 - The η prior and state regularization prevent the viscosity collapse observed in earlier experiments.
 - The pretrained glacier state is preserved while still allowing improvements to the ELBO after unfreezing.
 - The primary remaining limitation is that the PINN continues to receive much larger gradients than the VGP after epoch 400, likely contributing to the weaker recovery of the spatial viscosity distribution.
+---
+
+# Validation Results
+
+| Metric | Previous VI Run | η-Prior Run (Epoch 999) |
+|---------|-----------------|-------------------------|
+| `log10_eta_bias` | ~−1.06 | **−0.008** |
+| `log10_eta_rmse` | ~1.11 | **0.287** |
+| `log10_eta_r` | ~−0.03 | **~0.00** |
+| Mean predicted η | ~0.6 | **~12** |
+| Mean reference η | ~15 | **~15** |
+| Speed relative RMSE | ~0.02 | **0.025** |
+
+---
+
+## Interpretation
+
+The η-prior strategy successfully resolved the major failure mode observed in previous runs.
+
+### Improvements
+
+- The viscosity collapse was eliminated.
+- The mean viscosity prediction is now nearly unbiased (`log10_eta_bias ≈ -0.008`).
+- The viscosity RMSE improved substantially (from **~1.11** to **0.287**).
+- The pretrained PINN maintained good predictive performance, with only a small increase in speed RMSE.
+
+### Remaining Limitation
+
+Although the model accurately recovers the **average viscosity**, it still fails to recover the **spatial distribution** of viscosity.
+
+The correlation (`log10_eta_r ≈ 0`) indicates that the VGP is predicting an almost constant viscosity field centered near the prior (`η_init ≈ 12`) rather than learning meaningful spatial variations across the glacier.
+
+Overall, the revised optimization strategy successfully fixes the η→0 collapse and preserves the physical solution, but further improvements are needed to recover spatially varying viscosity.
+
+---
+
+# Next Steps
+
+Future work should focus on improving the spatial recovery of η rather than its overall magnitude. Possible directions include:
+
+- Refresh the final training plots using the completed training logs.
+- Generate posterior η maps from the HDF5 outputs to visually evaluate the recovered viscosity field.
+- Experiment with an η-focused training recipe by:
+  - reducing the strength of the η prior,
+  - increasing the influence of the physics loss,
+  - increasing the number of VGP inducing points, and
+  - keeping the PINN frozen for a longer portion of training.
+
+The primary objective of future tuning is to improve the spatial correlation (`log10_eta_r`) while maintaining the unbiased mean viscosity achieved by the current model.
