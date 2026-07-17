@@ -185,3 +185,31 @@ Future work will focus on improving the spatial reconstruction of η by:
 - Extending the frozen PINN stage before joint optimization.
 
 The goal is to improve spatial correlation while preserving the stable and unbiased mean viscosity recovered by the current training strategy.
+
+## Current Training Run Update
+
+At approximately **epoch 138** (PINN still frozen, ~5.6 hours into training), the results show a significant improvement over the previous run.
+
+| Metric | Current Run | Previous Flat Run |
+|--------|------------:|------------------:|
+| `log10_eta_r` | **0.58** | ~0 |
+| `log10_bias` | **−0.042** | ~−0.008 |
+| `log10_rmse` | **0.28** | ~0.29 |
+| η range | **~6.7–15.8** | ~constant 12 |
+| `updates_mean` | **0** | — |
+
+### Observations
+
+- The VGP is already recovering meaningful **spatial viscosity structure** while the PINN remains completely frozen.
+- The physics loss is approximately **−9.6**, indicating stable optimization.
+- Only VGP updates are occurring, which matches the intended training schedule.
+
+### Next Milestones
+
+Continue monitoring through the frozen phase (epoch 800). After the PINN is unfrozen, verify that:
+
+- `log10_eta_r` remains high and does **not** collapse back toward 0.
+- The gradient ratio (`mean_over_vgp`) remains controlled and does not explode as in previous experiments.
+- `updates_vgp` remains approximately **8×** `updates_mean`, confirming the alternating optimization strategy.
+
+The job is currently healthy on **p003**. At the current training rate (~40 epochs/hour), the frozen phase is expected to complete after approximately **20 hours** of total runtime, so a scheduler requeue will likely be required before reaching epoch 800.
