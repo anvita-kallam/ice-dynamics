@@ -93,6 +93,61 @@ The η-prior strategy successfully eliminated the primary failure mode from prev
 While the model accurately predicts the **mean viscosity**, it still fails to recover meaningful **spatial variations** (`log10_eta_r ≈ 0`). The VGP largely predicts a nearly constant viscosity field centered near the prior rather than a spatially varying viscosity map.
 
 ---
+# Figure 1: Viscosity Recovery
+
+<img ...>
+
+### Analysis
+
+- The predicted viscosity field is nearly uniform, whereas the ground truth contains significant spatial variability.
+- The mean viscosity is recovered accurately (`log10` bias ≈ **−0.008**, RMSE ≈ **0.287**), confirming that the η-prior successfully prevents viscosity collapse.
+- However, the difference maps and scatter plot show almost no relationship between predicted and true spatial patterns (`r ≈ 0.002`).
+- The VI uncertainty is nearly constant across the domain, indicating that the GP is not identifying regions of higher uncertainty.
+
+**Takeaway:** The model accurately predicts the average viscosity but fails to recover the spatial distribution, producing an almost constant viscosity field.
+
+---
+
+# Figure 2: Geometry Prediction
+
+<img ...>
+
+### Analysis
+
+- The PINN accurately reconstructs the glacier surface and thickness, with only small localized errors.
+- Most prediction errors occur near the glacier terminus, where gradients are largest.
+- Bed elevation shows the largest discrepancy, particularly near the downstream boundary.
+
+**Takeaway:** The pretrained PINN preserves glacier geometry well, indicating that geometry prediction is not limiting viscosity inference.
+
+---
+
+# Figure 3: Speed Prediction
+
+<img ...>
+
+### Analysis
+
+- The predicted speed field closely matches the ground truth with a relative RMSE of approximately **2.5%**.
+- Differences are small over most of the glacier and are concentrated near the terminus where velocities are highest.
+- The overall flow dynamics are accurately reproduced.
+
+**Takeaway:** The PINN maintains excellent velocity predictions even after joint training, confirming that introducing VI does not significantly degrade the forward solution.
+
+---
+
+# Figure 4: Velocity Components
+
+<img ...>
+
+### Analysis
+
+- Both horizontal velocity components (`u` and `v`) closely match the reference solution.
+- Errors remain small across most of the domain and are primarily concentrated near the terminus and lateral boundaries.
+- The transverse velocity (`v`) captures the expected flow structure with only minor localized differences.
+
+**Takeaway:** Joint optimization preserves both velocity components with high accuracy, demonstrating that the revised training strategy maintains the quality of the pretrained PINN while learning viscosity.
+---
 
 # Conclusions
 
