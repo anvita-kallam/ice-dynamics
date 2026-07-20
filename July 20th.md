@@ -128,3 +128,150 @@ Both the sequential and joint experiments can be submitted simultaneously on dif
 - The VGP initializes from its prior unless resuming from an existing VI-only checkpoint (`checkpoints/torch_vi_only/more_sliding/model.pt`).
 - `state_reg_scale=0` in `run_torch_vi_only.cfg`, since joint-training state regularization is unnecessary when the PINN is fixed.
 ```
+## VI-Only Pipeline Updates
+
+The sequential **VI-only** pipeline has been expanded to improve spatial viscosity recovery while keeping the joint training implementation completely independent.
+
+### 1. VGP-Only Optimization
+
+The VI-only training loop now optimizes only the VGP.
+
+- PINN permanently set to `eval()`
+- `requires_grad=False` for all PINN parameters
+- Any accidental PINN gradients are cleared every iteration
+- Removed joint and alternating optimization logic
+- Only the VGP (and associated shift parameters) are updated
+
+### 2. Configurable Gaussian Process
+
+The sparse variational GP now supports configurable kernels while preserving the previous behavior by default.
+
+New options include:
+
+- `kernel_type`
+  - `rbf`
+  - `matern12`
+  - `matern32`
+  - `matern52`
+- Anisotropic length scales
+- Optional independent y-direction length scale (`l_scale_eta_y`)
+- Learnable length scales
+- Configurable inducing point count using ice-only farthest-point sampling
+
+### 3. Optimizers and Learning Rate Schedules
+
+The VI-only optimizer is now configurable.
+
+Supported optimizers:
+
+- Adam
+- AdamW
+- AdamW + Natural Gradient Descent (NGD)
+
+Available learning rate schedulers:
+
+- Cosine decay
+- ReduceLROnPlateau
+- Exponential decay
+- None
+
+Learning rate changes are logged throughout training.
+
+### 4. Expanded Diagnostics
+
+Additional metrics are now recorded during training.
+
+Logged quantities include:
+
+- `log10_eta_r`
+- RMSE
+- Bias
+- Posterior standard deviation
+- Calibration statistics
+- Kernel length scales
+- Number of inducing points
+- ELBO components
+- Gradient norms
+- Learning rate
+
+Additional plots visualize:
+
+- Kernel parameters
+- Posterior uncertainty
+
+### 5. Early Stopping
+
+Configurable early stopping has been added.
+
+Example configuration:
+
+- `early_stop_metric = log10_eta_r`
+- `early_stop_patience = 80`
+
+Training can now terminate automatically when the selected metric stops improving.
+
+### 6. Hyperparameter Sweeps
+
+Automated sweep utilities have been added for the VI-only pipeline.
+
+Example commands:
+
+```bash
+python scripts/launch_vi_only_sweep.py configs/vi_only_sweep_grid.json
+
+sbatch slurm/vi_train_vi_only_sweep_one.sbatch \
+    configs/vi_only_sweeps/run_*.cfg
+```
+
+This enables systematic exploration of:
+
+- η prior strength
+- KL weight
+- Learning rate
+- Kernel type
+- Inducing point count
+- Other VI hyperparameters
+
+### 7. Posterior Evaluation
+
+A dedicated evaluation script has been added.
+
+```bash
+python evaluate_vi_only_posterior.py \
+    run_torch_vi_only.cfg \
+    --tag more_sliding
+```
+
+Outputs include:
+
+- Posterior mean maps
+- Uncertainty maps
+- Error vs. uncertainty analysis
+- 1σ / 2σ calibration
+- Summary JSON statistics
+
+### 8. Pipeline Isolation
+
+The VI-only workflow remains fully independent of the joint training pipeline.
+
+Separate resources are maintained for:
+
+- Configuration files
+- Checkpoints
+- Logs
+- Prediction outputs
+- Evaluation results
+
+All GP enhancements are implemented as optional arguments, so the existing joint pipeline is unaffected.
+
+### Default VI-Only Configuration
+
+The recommended starting configuration is:
+
+- **Kernel:** Matérn 3/2
+- **Inducing points:** 28 × 28 (ice-only FPS)
+- **Optimizer:** AdamW
+- **Learning rate scheduler:** Cosine decay
+- **`eta_prior_scale`:** 0.08
+- **Early stopping metric:** `log10_eta_r`
+```
