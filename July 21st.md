@@ -72,6 +72,9 @@ The inferred posterior is well calibrated and exhibits strong correlation with t
 
 # Figure 3. Geometry Reconstruction
 
+<img width="2041" height="1516" alt="image" src="https://github.com/user-attachments/assets/31d7a32f-6018-4cc5-9442-0bd645f5b8b1" />
+
+
 ## Results
 
 The pretrained PINN accurately reconstructs the glacier geometry prior to viscosity inference.
