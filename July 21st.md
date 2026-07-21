@@ -91,6 +91,9 @@ Surface elevation and ice thickness are reconstructed with excellent accuracy, w
 
 # Figure 4. Speed Reconstruction
 
+<img width="2041" height="530" alt="image" src="https://github.com/user-attachments/assets/d967cda5-88ea-400e-bd45-00bedf9d347d" />
+
+
 ## Results
 
 The predicted speed field closely matches the reference solution across the glacier.
