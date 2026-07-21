@@ -115,3 +115,65 @@ Neither velocity component exhibits noticeable systematic bias.
 ## Summary
 
 The PINN accurately captures both components of the glacier velocity field. Errors remain localized near the terminus, demonstrating that the sequential VI stage operates on a highly accurate forward solution.
+---
+# Figure 6. Joint vs. Sequential Recovery Comparison
+
+## Results
+
+This figure directly compares the posterior viscosity recovery obtained using the joint optimization pipeline and the sequential (frozen-PINN) VI pipeline.
+
+The scatter plot shows that both approaches reproduce the general relationship between the true and inferred viscosity, but the sequential model follows the one-to-one trend much more closely across the full viscosity range. The joint model exhibits stronger compression toward the mean, particularly for higher-viscosity regions.
+
+The error distributions further illustrate this improvement. The sequential model produces a narrower distribution with fewer large positive errors, while the joint model exhibits a broader tail, indicating larger overall reconstruction errors.
+
+The uncertainty-versus-error comparison shows that the sequential model maintains higher posterior uncertainty while simultaneously achieving lower reconstruction error. In contrast, the joint model is relatively overconfident despite producing larger errors, suggesting poorer uncertainty calibration.
+
+The recovery summary confirms these trends quantitatively:
+
+- **Lower RMSE:** Sequential (0.274) vs. Joint (0.292)
+- **Higher spatial correlation:** Sequential (`r = 0.831`) vs. Joint (`r ≈ 0.68`)
+- **Comparable bias:** Both models retain similar mean bias, with the joint model exhibiting a slightly smaller absolute bias.
+
+## Summary
+
+The sequential VI-only approach consistently outperforms the joint optimization strategy in recovering the spatial viscosity field. Although both methods recover similar mean viscosity, freezing the PINN allows the VGP to infer substantially more accurate spatial structure while maintaining well-calibrated uncertainty estimates.
+
+---
+
+# Figure 7. Spatial Comparison of Joint and Sequential Recovery
+
+## Results
+
+This figure compares the recovered viscosity fields produced by the joint and sequential pipelines.
+
+Both methods recover the broad spatial distribution of viscosity, but the sequential solution preserves noticeably stronger spatial contrast. The joint solution remains more spatially uniform, particularly across the central high-viscosity region.
+
+The difference maps show that the sequential model consistently predicts slightly higher viscosities throughout the central glacier while reducing the excessive smoothing present in the joint solution.
+
+The absolute-error reduction map demonstrates that the sequential model lowers reconstruction error across much of the glacier. Improvements are especially evident in the interior high-viscosity region, while only a few localized regions show slightly larger errors than the joint approach.
+
+The final binary comparison confirms this trend, with most pixels indicating lower absolute error for the sequential solution.
+
+## Summary
+
+The sequential pipeline produces a more spatially accurate viscosity field across most of the glacier. Improvements are widespread rather than localized, indicating that freezing the PINN substantially reduces the oversmoothing introduced during joint optimization.
+
+---
+
+# Figure 8. State Recovery Comparison
+
+## Results
+
+This figure compares the state-variable reconstruction errors between the joint and sequential pipelines.
+
+Across all state variables—including speed, surface elevation, thickness, and bed topography—the error patterns are remarkably similar.
+
+For glacier speed, both methods exhibit small residuals concentrated near the downstream boundary where velocity gradients are largest. Surface elevation and thickness errors remain low throughout the domain, with only localized discrepancies near the terminus.
+
+Bed topography errors are nearly identical between the two approaches and remain confined to the downstream boundary, reflecting limitations inherited from the pretrained PINN rather than the viscosity inference method.
+
+Importantly, no degradation in forward-model accuracy is observed after switching to the sequential VI pipeline.
+
+## Summary
+
+Freezing the PINN during VI optimization preserves the excellent forward-model performance achieved during pretraining. The improved viscosity recovery observed in the sequential approach is therefore obtained without sacrificing reconstruction accuracy for glacier geometry or velocity, indicating that the primary benefit comes from improved inversion rather than changes to the forward solution.
