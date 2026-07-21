@@ -53,6 +53,9 @@ The sequential VI-only approach substantially improves spatial viscosity recover
 
 # Figure 2. Posterior Uncertainty and Statistical Evaluation
 
+<img width="1892" height="557" alt="image" src="https://github.com/user-attachments/assets/153981c6-e773-4fb0-b887-1127d01d2ea8" />
+
+
 ## Results
 
 The posterior standard deviation remains relatively low across most of the glacier, with increased uncertainty appearing in regions of greater spatial variability. This suggests the uncertainty estimates are consistent with the difficulty of the inference problem.
