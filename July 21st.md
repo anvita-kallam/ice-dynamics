@@ -121,6 +121,9 @@ The PINN accurately captures both components of the glacier velocity field. Erro
 ---
 # Figure 6. Joint vs. Sequential Recovery Comparison
 
+<img width="1698" height="1378" alt="image" src="https://github.com/user-attachments/assets/1911779f-b3b6-4d97-86d0-f7b90d486d60" />
+
+
 ## Results
 
 This figure directly compares the posterior viscosity recovery obtained using the joint optimization pipeline and the sequential (frozen-PINN) VI pipeline.
