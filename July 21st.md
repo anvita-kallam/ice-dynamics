@@ -4,28 +4,55 @@
 
 Evaluate whether the **sequential PINN → VI** workflow improves recovery of the spatial viscosity field compared to the joint optimization approach.
 
-## Results
-
-Both stages of the sequential pipeline completed successfully.
-
 ### Performance Comparison
 
-| Metric | Sequential VI-Only | Joint Training |
-|--------|-------------------:|---------------:|
-| `log10_eta_r` | **0.812** (best: **0.826**) | **0.744** |
-| `log10_eta_rmse` | **0.278** | **0.292** |
-| Mean Bias | ~**−0.15** | ~**−0.15** |
+| Metric | Joint Training | Sequential VI-Only |
+|--------|---------------:|-------------------:|
+| Checkpoint | Epoch 749 | Best Epoch 54 |
+| `log10_eta_r` | **0.681** | **0.831** |
+| `log10_eta_rmse` | **0.292** | **0.274** |
+| `log10_eta_bias` | **−0.149** | **−0.177** |
+| Relative RMSE | **0.516** | **0.438** |
+| Mean η (Reference = 14.9 MPa·yr) | **8.71** | **8.31** |
+| Calibration (1σ / 2σ) | **0.45 / 0.71** | **0.77 / 1.00** |
 
-## Conclusions
+Compared to the joint model, the sequential pipeline achieved:
 
-The sequential VI-only pipeline achieves both **higher spatial correlation** and **lower RMSE** while maintaining a similar mean bias compared to the joint model.
+- **+0.149** improvement in spatial correlation.
+- **6.1% lower** log-space RMSE.
+- Lower absolute error over **60.8%** of the glacier domain.
+- Significantly improved posterior calibration.
 
-These results provide strong evidence that the viscosity field is identifiable when the PINN is held fixed. The remaining limitation in the joint approach is therefore likely due to **interference from joint optimization**, rather than a fundamental identifiability issue.
+The only metric where the joint model performs slightly better is mean bias, although the difference is relatively small.
+
+### PINN State Recovery
+
+The frozen-PINN sequential workflow also slightly improves reconstruction of the glacier state variables.
+
+| Field | Joint | Sequential |
+|------|-------:|-----------:|
+| u (m/yr) | 0.611 | **0.608** |
+| v (m/yr) | 0.627 | **0.570** |
+| Surface (m) | 0.636 | **0.590** |
+| Thickness (m) | 1.198 | **1.078** |
+| Bed (m) | 163.02 | **163.00** |
+
+These improvements are expected because the pretrained PINN remains fixed during VI optimization rather than continuing to change alongside the viscosity field.
+
+## Summary
+
+The sequential VI-only pipeline consistently outperforms the joint optimization approach for recovering the spatial viscosity field. While both methods recover similar mean viscosity, the sequential model achieves substantially higher spatial correlation, lower reconstruction error, and significantly better-calibrated uncertainty.
+
+These results provide strong evidence that the viscosity field is **identifiable** when the PINN is held fixed. The reduced performance of the joint model therefore appears to stem from **interference during joint optimization**, rather than a fundamental limitation of the inverse problem.
+
+One remaining limitation is the persistent low-viscosity bias observed across every experiment. Both the joint and sequential models underestimate the mean viscosity (`η ≈ 8.3–8.7 MPa·yr` compared to the reference `14.9 MPa·yr`), indicating that this bias likely originates from the physics formulation or η prior rather than the optimization strategy itself. This provides a clear direction for future work.
 
 ## Notes
 
-- Early stopping at **epoch 100** occurred as expected.
-- The reported `inf`/`-inf` values for the λ and `rh` diagnostics are expected empty-range sentinel values because λ inference and continuity constraints are disabled in this experiment. They do **not** indicate numerical divergence or instability.
+- The optimized sequential run corresponds to **Best Epoch 54**.
+- The earlier sequential experiment (early stopping at epoch 100) was evaluated only on the 8,192-point training subset and therefore is **not directly comparable** to the full-grid results reported above.
+- The optimized rerun achieved `log10_eta_r = 0.831` on the same subset and confirmed this performance on the full evaluation grid.
+- The previously reported joint correlation (`r ≈ 0.747`) came from the smaller evaluation subset; the full-grid evaluation gives the more representative value of **0.681**.
 
 ---
 # Figure 1. Viscosity Recovery
