@@ -30,6 +30,9 @@ These results provide strong evidence that the viscosity field is identifiable w
 ---
 # Figure 1. Viscosity Recovery
 
+<img width="2041" height="1059" alt="image" src="https://github.com/user-attachments/assets/494c8387-c832-41e7-abee-ae105133f630" />
+
+
 ## Results
 
 The sequential VI-only pipeline successfully recovers the major spatial patterns of the viscosity field. Unlike the previous joint-training approach, the estimated viscosity no longer collapses to a nearly constant value and instead captures the large-scale spatial variation across the glacier.
