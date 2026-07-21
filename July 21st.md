@@ -160,6 +160,9 @@ The sequential VI-only approach consistently outperforms the joint optimization 
 
 # Figure 7. Spatial Comparison of Joint and Sequential Recovery
 
+<img width="2737" height="1182" alt="image" src="https://github.com/user-attachments/assets/0dd52762-6770-4978-b390-881227fadc66" />
+
+
 ## Results
 
 This figure compares the recovered viscosity fields produced by the joint and sequential pipelines.
