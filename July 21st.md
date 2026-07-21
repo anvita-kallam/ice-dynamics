@@ -183,6 +183,9 @@ The sequential pipeline produces a more spatially accurate viscosity field acros
 
 # Figure 8. State Recovery Comparison
 
+<img width="2177" height="2118" alt="image" src="https://github.com/user-attachments/assets/f328c6f6-09cb-4e2d-851f-f17aadbeed8f" />
+
+
 ## Results
 
 This figure compares the state-variable reconstruction errors between the joint and sequential pipelines.
