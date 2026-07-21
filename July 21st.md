@@ -114,6 +114,9 @@ The pretrained PINN accurately reproduces glacier speed, with only small localiz
 
 # Figure 5. Velocity Component Reconstruction
 
+<img width="2041" height="1043" alt="image" src="https://github.com/user-attachments/assets/090d4d4e-84ae-47a8-9987-1e1a8195d077" />
+
+
 ## Results
 
 Both horizontal velocity components are reconstructed accurately.
