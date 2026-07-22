@@ -58,6 +58,9 @@ Among the completed runs, **raised_prior_center** produced the most promising im
 ---
 # Figure 1 – Comparison of η-Bias Experiments
 
+<img width="2048" height="1025" alt="image" src="https://github.com/user-attachments/assets/2d2b0557-f5e7-4197-86b2-2a3596c81491" />
+
+
 ## Results
 
 This figure compares the recovered viscosity fields from the completed η-bias experiments against the ground truth.
