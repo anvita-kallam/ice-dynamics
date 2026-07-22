@@ -54,3 +54,94 @@ Among the completed runs, **raised_prior_center** produced the most promising im
   - Posterior calibration
 - Evaluate the new **18 MPa·yr prior-center** experiment.
 - Select the best-performing sequential configuration for comparison against the joint optimization pipeline and adopt it as the new default training recipe.
+
+---
+# Figure 1 – Comparison of η-Bias Experiments
+
+## Results
+
+This figure compares the recovered viscosity fields from the completed η-bias experiments against the ground truth.
+
+- **Control (η prior center = 12 MPa·yr)** recovers the overall spatial pattern but substantially underestimates the viscosity magnitude across most of the glacier.
+- **Raised prior center (15 MPa·yr)** produces the closest qualitative match to the ground truth, increasing viscosity throughout the interior while preserving the recovered spatial structure.
+- **Strong physics** modestly increases viscosity relative to the control but still underestimates the high-viscosity interior region.
+- **Weak prior** produces the lowest viscosity estimates, indicating that reducing the prior strength alone is insufficient to correct the systematic bias.
+
+## Summary
+
+Among the completed experiments, increasing the prior center is the most effective modification. It improves the recovered viscosity magnitude without sacrificing the spatial structure learned by the model.
+
+---
+
+# Figure 2 – Raised Prior Center (15 MPa·yr)
+
+## Results
+
+The raised-prior model achieves the strongest quantitative performance obtained so far:
+
+- **log₁₀ correlation:** **0.845**
+- **log₁₀ RMSE:** **0.213**
+- **log₁₀ bias:** **−0.032**
+
+Spatially:
+
+- The recovered viscosity field closely follows the large-scale spatial distribution of the truth.
+- The remaining errors are concentrated primarily in the central high-viscosity region, where viscosity is still slightly underestimated.
+- Small positive residuals appear near the downstream terminus, but their magnitude is considerably smaller than in previous experiments.
+
+The log-space error maps confirm that most systematic underestimation has been removed, leaving relatively localized reconstruction errors.
+
+## Summary
+
+Raising the prior center substantially improves both spatial recovery and the recovered viscosity magnitude, reducing the systematic bias while maintaining excellent reconstruction accuracy.
+
+---
+
+# Figure 3 – Posterior Uncertainty and Error Distribution
+
+## Results
+
+### Posterior Standard Deviation
+
+- The posterior uncertainty remains spatially structured rather than uniform.
+- Higher uncertainty appears near regions with stronger viscosity gradients and near the glacier boundaries.
+- Lower uncertainty occurs across the smoother interior where observations better constrain the solution.
+
+### Scatter Plot
+
+- The estimated and true viscosities exhibit a strong linear relationship (**r = 0.845**).
+- The model closely follows the one-to-one trend for low and moderate viscosities.
+- The highest-viscosity regions remain slightly compressed toward lower predicted values, indicating a small amount of residual smoothing.
+
+### Error Histogram
+
+- The error distribution is centered close to zero.
+- Mean bias has been reduced to approximately **−0.03 log₁₀ units**, representing a substantial improvement over previous experiments.
+- Most errors are concentrated within a relatively narrow range, with only a small number of larger outliers.
+
+## Summary
+
+The raised-prior model not only improves reconstruction accuracy but also produces a well-centered error distribution while maintaining meaningful spatial uncertainty estimates.
+
+---
+
+# Figure 4 – Uncertainty Calibration
+
+## Results
+
+### Posterior Uncertainty vs. Reconstruction Error
+
+- Reconstruction error generally decreases as posterior uncertainty decreases.
+- Regions assigned larger uncertainty tend to exhibit larger reconstruction errors, indicating that the posterior uncertainty remains informative.
+- The relationship is not perfectly monotonic, suggesting that uncertainty calibration could still be improved.
+
+### Posterior Mean vs. Ground Truth
+
+- The recovered posterior follows the overall trend of the ground truth with **r = 0.845**.
+- Low and intermediate viscosities are recovered accurately.
+- The highest-viscosity regions remain mildly underestimated, producing a slight flattening near the upper end of the distribution.
+- Compared with earlier sequential models, this compression is significantly reduced.
+
+## Summary
+
+The uncertainty estimates remain physically meaningful, and the raised-prior model substantially improves recovery of the viscosity field while leaving only a modest underestimation at the highest viscosities.
