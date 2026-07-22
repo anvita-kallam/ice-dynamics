@@ -78,6 +78,9 @@ Among the completed experiments, increasing the prior center is the most effecti
 
 # Figure 2 – Raised Prior Center (15 MPa·yr)
 
+<img width="2041" height="1059" alt="image" src="https://github.com/user-attachments/assets/afd19a2a-a0cd-434a-a56b-9213fa410714" />
+
+
 ## Results
 
 The raised-prior model achieves the strongest quantitative performance obtained so far:
