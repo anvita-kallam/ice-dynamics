@@ -242,3 +242,65 @@ The **18 MPa·yr** experiment achieves the strongest quantitative reconstruction
 However, the accompanying reduction in posterior calibration indicates diminishing returns. Additional increases in the prior center are likely to continue reducing global bias while increasing local overestimation and producing increasingly overconfident uncertainty estimates.
 
 Future improvements are therefore more likely to come from adjusting the **prior strength, KL regularization, or GP model capacity**, rather than continuing to increase the prior center alone.
+---
+# Figure 5. Posterior Uncertainty Calibration (η_init = 15)
+
+<img width="2105" height="587" alt="image" src="https://github.com/user-attachments/assets/226681f7-91fe-4124-bc9b-e41cac115883" />
+
+
+## Results
+
+This figure evaluates whether the posterior uncertainty produced by the sequential VI model is consistent with the true reconstruction error for the **η_init = 15** experiment.
+
+**Left: Spatial distribution of 1σ coverage**
+
+The left panel shows whether the true viscosity falls within the predicted ±1σ interval at each grid cell.
+
+- **Green** indicates the true viscosity lies within the posterior uncertainty interval ("hit").
+- **Red** indicates the true value falls outside the predicted interval ("miss").
+
+Overall, **82.8%** of all **206,241** grid cells are covered by the predicted 1σ interval.
+
+Coverage is high throughout most of the glacier, with misses concentrated primarily in the central high-viscosity region and several localized regions near the outlet. These locations correspond to areas where the model systematically underestimates viscosity, causing the posterior mean to lie outside the predicted uncertainty interval.
+
+---
+
+**Center: Normalized residual distribution**
+
+The center panel plots the normalized reconstruction error
+
+\[
+\frac{|\log_{10}\eta_{\mathrm{true}}-\log_{10}\eta_{\mathrm{pred}}|}
+{\sigma_{\mathrm{post}}}
+\]
+
+where values less than one indicate that the true viscosity lies within the predicted 1σ interval.
+
+The dashed vertical line marks the 1σ threshold.
+
+Most residuals fall below this threshold, producing the observed **82.8%** empirical coverage.
+
+The figure also reports **100% 2σ coverage**, indicating every true viscosity value lies within two posterior standard deviations.
+
+Together, these results suggest that the posterior uncertainties are generally conservative rather than overconfident.
+
+---
+
+**Right: Coverage calibration curve**
+
+The calibration curve compares the empirical coverage of the posterior against the expected Gaussian coverage.
+
+A perfectly calibrated model would lie on the dashed diagonal.
+
+The η_init = 15 model consistently lies **above** the diagonal, indicating that empirical coverage exceeds nominal coverage across nearly all confidence levels.
+
+In particular,
+
+- nominal **68% (1σ)** coverage corresponds to approximately **83%** empirical coverage,
+- nominal **95% (2σ)** coverage reaches **100%** empirical coverage.
+
+This behavior indicates that the posterior uncertainty is slightly overestimated, producing intervals that are wider than strictly necessary. While conservative, these uncertainty estimates remain well calibrated and avoid the overconfidence observed in higher prior-center experiments.
+
+#### Summary
+
+The η_init = 15 model produces reliable posterior uncertainty estimates with **82.8% 1σ coverage** and complete **2σ coverage** across the glacier domain. Although the uncertainty intervals are somewhat conservative relative to an ideal Gaussian posterior, they provide substantially better calibration than the η_init = 18 experiment, whose higher reconstruction accuracy comes at the cost of overconfident uncertainty estimates. This tradeoff makes the η_init = 15 configuration a strong candidate for real-glacier applications, where trustworthy uncertainty quantification is as important as reconstruction accuracy.
