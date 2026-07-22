@@ -157,3 +157,88 @@ The raised-prior model not only improves reconstruction accuracy but also produc
 ## Summary
 
 The uncertainty estimates remain physically meaningful, and the raised-prior model substantially improves recovery of the viscosity field while leaving only a modest underestimation at the highest viscosities.
+---
+# Comparison of Prior-Center Experiments
+
+## Results
+
+Three sequential full-grid experiments were completed using progressively larger viscosity prior centers.
+
+| Initial Prior Center (MPa·yr) | log₁₀ Correlation (r) | log₁₀ Bias | Mean η (MPa·yr) | Effective Prior Center (MPa·yr) | 1σ Coverage |
+|------------------------------:|----------------------:|-----------:|----------------:|--------------------------------:|------------:|
+| 12 | 0.831 | −0.176 | 8.3 | ~7.8 | 0.78 |
+| 15 | 0.836 | −0.101 | 9.9 | ~9.5 | 0.83 |
+| 18 | **0.845** | **−0.032** | **11.6** | **~11.7** | 0.50 |
+
+*Effective prior center =* `η_init × exp(η_log_shift)`.  
+*Reference mean viscosity ≈ 14.9 MPa·yr.*
+
+## Observations
+
+### Increasing the Prior Center Reduces Mean Bias
+
+Increasing the prior center consistently shifts the recovered viscosity field upward.
+
+- Mean viscosity increased from **8.3 → 9.9 → 11.6 MPa·yr**.
+- Log-space bias improved substantially from **−0.176 → −0.101 → −0.032**.
+- The recovered mean approaches the reference value without disrupting the overall spatial pattern.
+
+The relationship is approximately linear, suggesting that the prior center primarily controls the global viscosity level.
+
+---
+
+### The Model Applies a Nearly Constant Downward Shift
+
+Although the prior center changes substantially, the learned posterior consistently shifts the viscosity downward by approximately the same amount.
+
+- Effective centers:
+  - **7.8 MPa·yr**
+  - **9.5 MPa·yr**
+  - **11.7 MPa·yr**
+
+This indicates that increasing the prior center mainly translates the recovered viscosity field upward rather than fundamentally changing the inferred spatial structure.
+
+---
+
+### Spatial Recovery is Near Saturation
+
+Spatial correlation improves only modestly across the experiments:
+
+- **0.831 → 0.836 → 0.845**
+
+While the higher prior center produces measurable gains, the relatively small improvement suggests that the current model has largely saturated its ability to recover additional spatial structure.
+
+Remaining errors are likely due to model capacity or the inverse formulation rather than the prior center itself.
+
+---
+
+### Calibration Degrades at Higher Prior Centers
+
+Posterior calibration improves initially but deteriorates once the prior center becomes too large.
+
+| Prior Center | 1σ Coverage |
+|--------------|------------:|
+| 12 | 0.78 |
+| 15 | **0.83** |
+| 18 | **0.50** |
+
+The 18 MPa·yr experiment becomes noticeably overconfident despite producing the smallest reconstruction bias.
+
+This behavior is consistent with the difference maps, where low-viscosity outlet regions begin to show localized overestimation.
+
+---
+
+## Summary
+
+Increasing the viscosity prior center is an effective method for reducing the systematic low-viscosity bias observed in previous sequential models.
+
+The **18 MPa·yr** experiment achieves the strongest quantitative reconstruction:
+
+- Highest spatial correlation (**r = 0.845**)
+- Lowest RMSE
+- Smallest bias
+- Highest recovered mean viscosity
+
+However, the accompanying reduction in posterior calibration indicates diminishing returns. Additional increases in the prior center are likely to continue reducing global bias while increasing local overestimation and producing increasingly overconfident uncertainty estimates.
+
+Future improvements are therefore more likely to come from adjusting the **prior strength, KL regularization, or GP model capacity**, rather than continuing to increase the prior center alone.
