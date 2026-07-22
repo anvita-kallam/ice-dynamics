@@ -105,6 +105,9 @@ Raising the prior center substantially improves both spatial recovery and the re
 
 # Figure 3 – Posterior Uncertainty and Error Distribution
 
+<img width="1892" height="557" alt="image" src="https://github.com/user-attachments/assets/2e677148-7cc1-4ee6-8f81-cc2009ceeb81" />
+
+
 ## Results
 
 ### Posterior Standard Deviation
@@ -132,6 +135,9 @@ The raised-prior model not only improves reconstruction accuracy but also produc
 ---
 
 # Figure 4 – Uncertainty Calibration
+
+<img width="1650" height="675" alt="image" src="https://github.com/user-attachments/assets/76ba4954-3483-4f56-be3d-d1a428b1bf6e" />
+
 
 ## Results
 
