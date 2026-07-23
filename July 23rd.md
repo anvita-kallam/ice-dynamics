@@ -1,16 +1,11 @@
-# How we tuned the viscosity (η) model
+# How I tuned the viscosity (η) model
 
-This note walks through the **model-tuning story** in plain language.
-It is about recovering ice **viscosity** η on the synthetic “more sliding”
+This note is about recovering ice **viscosity** η on the synthetic “more sliding”
 MISMIP+ spin-up, using variational inference (VI) with a frozen PINN.
-
-Figures live under [`outputs/figures/vi/`](../../outputs/figures/vi/).
-Technical suite details: [`ETA_BIAS_SUITE.md`](ETA_BIAS_SUITE.md).
-Pipeline overview: [`SEQUENTIAL_VI_PIPELINE.md`](SEQUENTIAL_VI_PIPELINE.md).
 
 ---
 
-## 1. What we are trying to do
+## 1. Goal
 
 Ice flow depends on how “stiff” the ice is. That stiffness is the viscosity η.
 We do **not** observe η directly. We observe velocity and geometry, then ask
@@ -39,18 +34,19 @@ We use a **sequential** recipe:
 This beat the older approach of training the PINN and the viscosity model
 **together** (“joint” training).
 
-![Joint vs sequential η maps](../../outputs/figures/vi/joint_vs_sequential_optimized/eta_joint_vs_sequential_maps.png)
+<img width="2737" height="1182" alt="image" src="https://github.com/user-attachments/assets/ab5fc445-8f1f-43e6-9372-dbbdaef4876a" />
+
 
 **Takeaway:** sequential recovery follows the true spatial pattern much more
 closely (correlation **r ≈ 0.83** vs **r ≈ 0.68** for joint).
 
-![Joint vs sequential diagnostics](../../outputs/figures/vi/joint_vs_sequential_optimized/eta_joint_vs_sequential_diagnostics.png)
 
 The optimized sequential baseline still had a clear problem: **η was too low
 on average** (mean ≈ 8–9 vs truth ≈ 14.9). Spatial pattern was good; magnitude
 was biased low.
 
-![Optimized sequential η vs truth](../../outputs/figures/vi/more_sliding_vi_only_optimized/eta_truth_estimate_diff.png)
+<img width="2041" height="1059" alt="image" src="https://github.com/user-attachments/assets/167589cb-f053-4384-b748-41fa5995baad" />
+
 
 ---
 
@@ -74,7 +70,8 @@ Eligibility gate for “good enough spatial skill”: **r ≥ 0.82**.
 
 ### Side-by-side: truth vs four finished suite models
 
-![Truth vs four suite estimates](../../outputs/figures/vi/eta_bias_v1_truth_vs_four_estimates.png)
+<img width="2482" height="1243" alt="image" src="https://github.com/user-attachments/assets/3824d65e-003c-4dc5-9452-e23cb783d789" />
+
 
 **What the eye sees:** every estimate is still darker (lower η) than truth, but
 **raised center (η_init=15)** is the least dark of this set. Weak prior is the
@@ -96,7 +93,9 @@ most under-estimated.
 
 Because 12 → 15 helped, we tried **η_init = 18**.
 
-![η_init=18 truth vs estimate](../../outputs/figures/vi/raised_prior_center_18/eta_truth_estimate_diff.png)
+<img width="2041" height="1059" alt="image" src="https://github.com/user-attachments/assets/0d6ab87f-812d-4399-abe0-e563882fe09c" />
+
+
 
 Full-grid scorecard (best checkpoint):
 
@@ -112,7 +111,7 @@ Full-grid scorecard (best checkpoint):
 **Caveat:** its uncertainty got overconfident (1σ coverage fell to ~50%).
 η_init=15 is a better “honest uncertainty” model.
 
-![η_init=15 recovery](../../outputs/figures/vi/raised_prior_center_15/eta_truth_estimate_diff.png)
+<img width="2041" height="1059" alt="image" src="https://github.com/user-attachments/assets/2783e86e-62c0-4184-9ed4-a9e77a9f05ca" />
 
 ---
 
@@ -120,7 +119,8 @@ Full-grid scorecard (best checkpoint):
 
 For η_init=15 we plotted where the truth falls inside the model’s ±1σ band.
 
-![η_init=15 1σ coverage](../../outputs/figures/vi/raised_prior_center_15/eta_1sigma_coverage.png)
+<img width="2105" height="587" alt="image" src="https://github.com/user-attachments/assets/d1450b3f-edca-4485-a28c-2b23fb822bdb" />
+
 
 - About **83%** of points are inside 1σ (a well-calibrated Gaussian would be ~68%).
 - That means this model is a bit **conservative**: error bars are a little wide,
@@ -130,4 +130,5 @@ For η_init=15 we plotted where the truth falls inside the model’s ±1σ band.
 
 Scatter of estimate vs truth for the same run:
 
-![η_init=15 uncertainty / scatter](../../outputs/figures/vi/raised_prior_center_15/eta_uncertainty_scatter.png)
+<img width="1892" height="557" alt="image" src="https://github.com/user-attachments/assets/ebf418f5-57f8-4e93-9b65-19a30bbabc25" />
+
